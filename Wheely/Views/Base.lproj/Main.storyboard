@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Wheely" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c00-IJ-Lzt" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="0.0" y="176" width="414" height="720"/>
+                                <color key="backgroundColor" systemColor="systemGray6Color" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="8gv-B0-NnJ">
+                                <rect key="frame" x="128.5" y="122" width="157" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QpI-08-S9j">
+                                        <rect key="frame" x="0.0" y="0.0" width="37" height="30"/>
+                                        <state key="normal" title="Write"/>
+                                        <connections>
+                                            <action selector="writeButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dKc-9I-oia"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ywd-oA-0Fe">
+                                        <rect key="frame" x="57" y="0.0" width="35" height="30"/>
+                                        <state key="normal" title="Read"/>
+                                        <connections>
+                                            <action selector="readButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4dj-yd-3Ww"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R6R-1M-HFd">
+                                        <rect key="frame" x="112" y="0.0" width="45" height="30"/>
+                                        <state key="normal" title="Delete"/>
+                                        <connections>
+                                            <action selector="deleteButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AmT-Mk-Z08"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MXb-tJ-BUn">
+                                <rect key="frame" x="245" y="76" width="32" height="30"/>
+                                <state key="normal" title="Stop"/>
+                                <connections>
+                                    <action selector="stopButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HoO-Bl-jPK"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MiY-IJ-rAa">
+                                <rect key="frame" x="128" y="76" width="34" height="30"/>
+                                <state key="normal" title="Start"/>
+                                <connections>
+                                    <action selector="startButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xos-Rs-iUQ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="c00-IJ-Lzt" firstAttribute="top" secondItem="8gv-B0-NnJ" secondAttribute="bottom" constant="24" id="DWe-wM-Yzg"/>
+                            <constraint firstItem="MiY-IJ-rAa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="128" id="HMJ-Gd-11W"/>
+                            <constraint firstItem="8gv-B0-NnJ" firstAttribute="top" secondItem="MiY-IJ-rAa" secondAttribute="bottom" constant="16" id="ID0-2J-FWU"/>
+                            <constraint firstItem="8gv-B0-NnJ" firstAttribute="centerX" secondItem="c00-IJ-Lzt" secondAttribute="centerX" id="QPC-Ek-1pq"/>
+                            <constraint firstItem="MXb-tJ-BUn" firstAttribute="leading" secondItem="MiY-IJ-rAa" secondAttribute="trailing" constant="83" id="ZeU-m0-3L8"/>
+                            <constraint firstItem="c00-IJ-Lzt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="aop-2q-nYW"/>
+                            <constraint firstItem="8gv-B0-NnJ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="cSu-kP-NSM"/>
+                            <constraint firstItem="MiY-IJ-rAa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="32" id="caG-lC-4gS"/>
+                            <constraint firstItem="MiY-IJ-rAa" firstAttribute="baseline" secondItem="MXb-tJ-BUn" secondAttribute="baseline" id="fYT-7O-NcD"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="c00-IJ-Lzt" secondAttribute="bottom" constant="-34" id="mKU-md-jAK"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="c00-IJ-Lzt" id="d2m-VO-qSd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="115.84821428571428"/>
+        </scene>
+    </scenes>
+</document>

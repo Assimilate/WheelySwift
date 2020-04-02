@@ -1,0 +1,6 @@
+module Pods_Wheely {
+  umbrella header "Pods-Wheely-umbrella.h"
+
+  export *
+  module * { export * }
+}
