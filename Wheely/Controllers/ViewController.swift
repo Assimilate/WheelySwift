@@ -9,8 +9,9 @@
 import UIKit
 import WatchConnectivity
 import HealthKit
-import Charts
 import CoreData
+import Charts
+
 
 class ViewController: UIViewController {
     
@@ -18,42 +19,6 @@ class ViewController: UIViewController {
     //-> IB related variables and functions relating to UI components.
     
     // Buttons.
-    
-    @IBAction func writeButton(_ sender: Any) {
-        
-    }
-    
-    @IBAction func readButton(_ sender: Any) {
-//        print("HeartRate----------")
-//        self.database!.readData(entity: "HeartRate", type: "heartRate")
-//        print("GPS----------")
-//        self.database!.readData(entity: "GPS", type: "velocity")
-//        print("Accelerometer----------")
-//        self.database!.readData(entity: "Accelerometer", type: "acceleration")
-//        print("Tacx----------")
-        self.database!.readData(entity: "Tacx", type: "velocity")
-    }
-    
-    @IBAction func deleteButton(_ sender: Any) {
-//        self.database!.deleteAllDataFromEntity(entity: "HeartRate")
-//        self.database!.deleteAllDataFromEntity(entity: "Accelerometer")
-//        self.database!.deleteAllDataFromEntity(entity: "GPS")
-        self.database!.deleteAllDataFromEntity(entity: "Tacx")
-    }
-    
-    @IBAction func startButton(_ sender: Any) {
-//        self.heartRateModel?.startWatchSession()
-//        self.gpsModel?.startGPS()
-//        self.accelerometerModel?.startAccelerometer()
-        self.tacxModel?.startBLE()
-    }
-    
-    @IBAction func stopButton(_ sender: Any) {
-//        self.heartRateModel?.stopWatchSession()
-//        self.gpsModel?.stopGPS()
-//        self.accelerometerModel?.stopAccelerometer()
-        self.tacxModel?.stopBLE()
-    }
     
     
     // Labels.
