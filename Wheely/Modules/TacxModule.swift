@@ -9,14 +9,14 @@
 import Foundation
 import CoreBluetooth
 
-class TacxModel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
+class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     
     // Initializer.
     
-    var viewController: ViewController?
+    var viewController: HomeController?
     var database: Database?
     
-    init(viewController: ViewController, database: Database) {
+    init(viewController: HomeController, database: Database) {
         self.viewController = viewController
         self.database = database
     }

@@ -13,33 +13,10 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     
-    let healthStore = HKHealthStore()
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        
-        // Enable background delivery.
-        self.healthStore.enableBackgroundDelivery(
-            for: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
-          frequency: .immediate,
-          withCompletion: { succeeded, error in
-            guard error != nil && succeeded else {
-              return
-            }
-        })        
-
-    }
+    var window: UIWindow?
     
-    func sessionDidBecomeInactive(_ session: WCSession) {
-        
-    }
-    
-    func sessionDidDeactivate(_ session: WCSession) {
-        
-    }
-    
-
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
         // Override point for customization after application launch.
         
         if WCSession.isSupported() {
@@ -47,6 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             session.delegate = self
             session.activate()
         }
+        
+        UINavigationBar.appearance().barTintColor = .orange
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        
+        
         return true
     }
 
@@ -64,6 +47,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
+    let healthStore = HKHealthStore()
+
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+
+        // Enable background delivery.
+        self.healthStore.enableBackgroundDelivery(
+            for: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+          frequency: .immediate,
+          withCompletion: { succeeded, error in
+            guard error != nil && succeeded else {
+              return
+            }
+        })
+
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {
+
+    }
+
+    func sessionDidDeactivate(_ session: WCSession) {
+
+    }
+
+
     private func session (session: WCSession, didReceiveMessage message: [String : AnyObject]) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "receivedWatchMessage"), object: self, userInfo: message)
     }

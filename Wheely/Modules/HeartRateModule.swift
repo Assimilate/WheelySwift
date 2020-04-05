@@ -10,16 +10,16 @@ import Foundation
 import HealthKit
 import WatchConnectivity
 
-class HeartRateModel: NSObject, WCSessionDelegate {
+class HeartRateModule: NSObject, WCSessionDelegate {
     
     // Initializer.
     
-    var viewController: ViewController?
+    var viewController: HomeController?
     var database: Database?
     
     let session = WCSession.default
     
-    init(viewController: ViewController, database: Database) {
+    init(viewController: HomeController, database: Database) {
         self.viewController = viewController
         self.database = database
     }

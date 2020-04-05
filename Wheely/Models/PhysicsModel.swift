@@ -6,8 +6,9 @@
 //  Copyright © 2020 Daniel Abella. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class PhysicsModel {
-    
+    var view: UIView?
+    var title: String?
 }

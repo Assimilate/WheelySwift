@@ -9,14 +9,14 @@
 import Foundation
 import CoreLocation
 
-class GPSModel: NSObject, CLLocationManagerDelegate{
+class GPSModule: NSObject, CLLocationManagerDelegate{
     
     // Initializer.
     
-    var viewController: ViewController?
+    var viewController: HomeController?
     var database: Database?
     
-    init(viewController: ViewController, database: Database) {
+    init(viewController: HomeController, database: Database) {
         self.viewController = viewController
         self.database = database
     }

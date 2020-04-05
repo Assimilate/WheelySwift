@@ -8,18 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		315A0785ACE5E134D67AB2F3 /* libPods-Wheely.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB04428B54EBCF543138839 /* libPods-Wheely.a */; };
+		3F01E0602439FC430072280C /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E05F2439FC430072280C /* FeedCell.swift */; };
+		3F01E062243A14290072280C /* PhysicsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E061243A14290072280C /* PhysicsCell.swift */; };
+		3F01E067243A248C0072280C /* poly@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E064243A248C0072280C /* poly@2x.png */; };
+		3F01E068243A248C0072280C /* poly@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E065243A248C0072280C /* poly@3x.png */; };
+		3F01E069243A248C0072280C /* poly@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E066243A248C0072280C /* poly@1x.png */; };
 		3F06EF2E242CFECF00602724 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF8242A860900BB7F0D /* ViewController.swift */; };
+		3F33E0C72438E0DB006250B2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0C62438E0DB006250B2 /* Extensions.swift */; };
+		3F33E0C92438E0FD006250B2 /* SensorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0C82438E0FD006250B2 /* SensorCell.swift */; };
+		3F33E0CB2438E4BD006250B2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0CA2438E4BD006250B2 /* MenuBar.swift */; };
+		3F33E0DD2438F626006250B2 /* home@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0DC2438F626006250B2 /* home@1x.png */; };
+		3F33E0E02438F811006250B2 /* home@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0DE2438F811006250B2 /* home@2x.png */; };
+		3F33E0E12438F811006250B2 /* home@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0DF2438F811006250B2 /* home@3x.png */; };
+		3F33E0E52438F81C006250B2 /* thunder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0E22438F81B006250B2 /* thunder@3x.png */; };
+		3F33E0E62438F81C006250B2 /* thunder@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0E32438F81B006250B2 /* thunder@1x.png */; };
+		3F33E0E72438F81C006250B2 /* thunder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0E42438F81B006250B2 /* thunder@2x.png */; };
+		3F33E0EB24392E94006250B2 /* wrench@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0E824392E94006250B2 /* wrench@1x.png */; };
+		3F33E0EC24392E94006250B2 /* wrench@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0E924392E94006250B2 /* wrench@2x.png */; };
+		3F33E0ED24392E94006250B2 /* wrench@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F33E0EA24392E94006250B2 /* wrench@3x.png */; };
+		3F33E0EF243936B9006250B2 /* SensorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0EE243936B9006250B2 /* SensorModel.swift */; };
 		3F3BE252242BC1DE00DC84CA /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3BE251242BC1DE00DC84CA /* HealthKit.framework */; };
 		3F3BE255242BCCD300DC84CA /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3BE254242BCCD300DC84CA /* HealthKit.framework */; };
-		3F3CF81A2434C3B70089061C /* GPSModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8192434C3B70089061C /* GPSModel.swift */; };
-		3F3CF81C2434C3C50089061C /* AccelerometerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81B2434C3C50089061C /* AccelerometerModel.swift */; };
-		3F3CF81E2434C3D20089061C /* TacxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81D2434C3D20089061C /* TacxModel.swift */; };
-		3F3CF8202434C3F20089061C /* HeartRateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81F2434C3F20089061C /* HeartRateModel.swift */; };
+		3F3CF81A2434C3B70089061C /* GPSModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8192434C3B70089061C /* GPSModule.swift */; };
+		3F3CF81C2434C3C50089061C /* AccelerometerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81B2434C3C50089061C /* AccelerometerModule.swift */; };
+		3F3CF81E2434C3D20089061C /* TacxModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81D2434C3D20089061C /* TacxModule.swift */; };
+		3F3CF8202434C3F20089061C /* HeartRateModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81F2434C3F20089061C /* HeartRateModule.swift */; };
 		3F3CF8222434C4010089061C /* PhysicsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8212434C4010089061C /* PhysicsModel.swift */; };
 		3F3CF8252434C43F0089061C /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8242434C43F0089061C /* Database.swift */; };
 		3F890CF5242A860800BB7F0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF4242A860800BB7F0D /* AppDelegate.swift */; };
 		3F890CF7242A860900BB7F0D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF6242A860900BB7F0D /* SceneDelegate.swift */; };
-		3F890CFC242A860900BB7F0D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F890CFA242A860900BB7F0D /* Main.storyboard */; };
 		3F890CFE242A860A00BB7F0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F890CFD242A860A00BB7F0D /* Assets.xcassets */; };
 		3F890D01242A860A00BB7F0D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F890CFF242A860A00BB7F0D /* LaunchScreen.storyboard */; };
 		3F890D0E242A86C400BB7F0D /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F890D0C242A86C400BB7F0D /* Interface.storyboard */; };
@@ -77,21 +94,38 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F01E05F2439FC430072280C /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		3F01E061243A14290072280C /* PhysicsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCell.swift; sourceTree = "<group>"; };
+		3F01E064243A248C0072280C /* poly@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@2x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@2x.png"; sourceTree = "<group>"; };
+		3F01E065243A248C0072280C /* poly@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@3x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@3x.png"; sourceTree = "<group>"; };
+		3F01E066243A248C0072280C /* poly@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@1x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@1x.png"; sourceTree = "<group>"; };
+		3F33E0C62438E0DB006250B2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		3F33E0C82438E0FD006250B2 /* SensorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorCell.swift; sourceTree = "<group>"; };
+		3F33E0CA2438E4BD006250B2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		3F33E0DC2438F626006250B2 /* home@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "home@1x.png"; path = "../../../../.Trash/home@1x.png"; sourceTree = "<group>"; };
+		3F33E0DE2438F811006250B2 /* home@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "home@2x.png"; path = "../../../../.Trash/home@2x.png"; sourceTree = "<group>"; };
+		3F33E0DF2438F811006250B2 /* home@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "home@3x.png"; path = "../../../../.Trash/home@3x.png"; sourceTree = "<group>"; };
+		3F33E0E22438F81B006250B2 /* thunder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "thunder@3x.png"; path = "../../../../.Trash/thunder@3x.png"; sourceTree = "<group>"; };
+		3F33E0E32438F81B006250B2 /* thunder@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "thunder@1x.png"; path = "../../../../.Trash/thunder@1x.png"; sourceTree = "<group>"; };
+		3F33E0E42438F81B006250B2 /* thunder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "thunder@2x.png"; path = "../../../../.Trash/thunder@2x.png"; sourceTree = "<group>"; };
+		3F33E0E824392E94006250B2 /* wrench@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "wrench@1x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/wrench@1x.png"; sourceTree = "<group>"; };
+		3F33E0E924392E94006250B2 /* wrench@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "wrench@2x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/wrench@2x.png"; sourceTree = "<group>"; };
+		3F33E0EA24392E94006250B2 /* wrench@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "wrench@3x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/wrench@3x.png"; sourceTree = "<group>"; };
+		3F33E0EE243936B9006250B2 /* SensorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorModel.swift; sourceTree = "<group>"; };
 		3F3BE24F242BC1DD00DC84CA /* WheelyWatch Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WheelyWatch Extension.entitlements"; sourceTree = "<group>"; };
 		3F3BE251242BC1DE00DC84CA /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS6.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		3F3BE253242BCCD300DC84CA /* Wheely.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wheely.entitlements; sourceTree = "<group>"; };
 		3F3BE254242BCCD300DC84CA /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
-		3F3CF8192434C3B70089061C /* GPSModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSModel.swift; sourceTree = "<group>"; };
-		3F3CF81B2434C3C50089061C /* AccelerometerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerometerModel.swift; sourceTree = "<group>"; };
-		3F3CF81D2434C3D20089061C /* TacxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TacxModel.swift; sourceTree = "<group>"; };
-		3F3CF81F2434C3F20089061C /* HeartRateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateModel.swift; sourceTree = "<group>"; };
+		3F3CF8192434C3B70089061C /* GPSModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSModule.swift; sourceTree = "<group>"; };
+		3F3CF81B2434C3C50089061C /* AccelerometerModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerometerModule.swift; sourceTree = "<group>"; };
+		3F3CF81D2434C3D20089061C /* TacxModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TacxModule.swift; sourceTree = "<group>"; };
+		3F3CF81F2434C3F20089061C /* HeartRateModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateModule.swift; sourceTree = "<group>"; };
 		3F3CF8212434C4010089061C /* PhysicsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsModel.swift; sourceTree = "<group>"; };
 		3F3CF8242434C43F0089061C /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		3F890CF1242A860800BB7F0D /* Wheely.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wheely.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F890CF4242A860800BB7F0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3F890CF6242A860900BB7F0D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		3F890CF8242A860900BB7F0D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		3F890CFB242A860900BB7F0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3F890CFD242A860A00BB7F0D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3F890D00242A860A00BB7F0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F890D02242A860A00BB7F0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -146,6 +180,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F01E063243A1DAF0072280C /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				3F3CF8192434C3B70089061C /* GPSModule.swift */,
+				3F3CF81B2434C3C50089061C /* AccelerometerModule.swift */,
+				3F3CF81D2434C3D20089061C /* TacxModule.swift */,
+				3F3CF81F2434C3F20089061C /* HeartRateModule.swift */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		3F33E0C52438E0D0006250B2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				3F33E0C62438E0DB006250B2 /* Extensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		3F392A7524352E8B0031C80B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +219,18 @@
 			isa = PBXGroup;
 			children = (
 				3F890CFD242A860A00BB7F0D /* Assets.xcassets */,
+				3F01E066243A248C0072280C /* poly@1x.png */,
+				3F01E064243A248C0072280C /* poly@2x.png */,
+				3F01E065243A248C0072280C /* poly@3x.png */,
+				3F33E0DC2438F626006250B2 /* home@1x.png */,
+				3F33E0DE2438F811006250B2 /* home@2x.png */,
+				3F33E0DF2438F811006250B2 /* home@3x.png */,
+				3F33E0E32438F81B006250B2 /* thunder@1x.png */,
+				3F33E0E42438F81B006250B2 /* thunder@2x.png */,
+				3F33E0E22438F81B006250B2 /* thunder@3x.png */,
+				3F33E0E824392E94006250B2 /* wrench@1x.png */,
+				3F33E0E924392E94006250B2 /* wrench@2x.png */,
+				3F33E0EA24392E94006250B2 /* wrench@3x.png */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -201,11 +266,8 @@
 		3F3BE258242BDF5800DC84CA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3F3CF8192434C3B70089061C /* GPSModel.swift */,
-				3F3CF81B2434C3C50089061C /* AccelerometerModel.swift */,
-				3F3CF81D2434C3D20089061C /* TacxModel.swift */,
-				3F3CF81F2434C3F20089061C /* HeartRateModel.swift */,
 				3F3CF8212434C4010089061C /* PhysicsModel.swift */,
+				3F33E0EE243936B9006250B2 /* SensorModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -213,8 +275,11 @@
 		3F3BE259242BDF6000DC84CA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3F890CFA242A860900BB7F0D /* Main.storyboard */,
 				3F890CFF242A860A00BB7F0D /* LaunchScreen.storyboard */,
+				3F33E0CA2438E4BD006250B2 /* MenuBar.swift */,
+				3F01E05F2439FC430072280C /* FeedCell.swift */,
+				3F33E0C82438E0FD006250B2 /* SensorCell.swift */,
+				3F01E061243A14290072280C /* PhysicsCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -261,6 +326,8 @@
 		3F890CF3242A860800BB7F0D /* Wheely */ = {
 			isa = PBXGroup;
 			children = (
+				3F01E063243A1DAF0072280C /* Modules */,
+				3F33E0C52438E0D0006250B2 /* Helpers */,
 				3F392A7A24352EE90031C80B /* Assets */,
 				3F3CF8232434C41A0089061C /* Database */,
 				3F3BE25A242BDF6500DC84CA /* Controllers */,
@@ -306,7 +373,6 @@
 				B4422179E8AD429F8D4AADFB /* Pods-WheelyWatch Extension.debug.xcconfig */,
 				E875A0E29B24F69545BEFC66 /* Pods-WheelyWatch Extension.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -416,9 +482,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F01E067243A248C0072280C /* poly@2x.png in Resources */,
+				3F33E0E62438F81C006250B2 /* thunder@1x.png in Resources */,
 				3F890D01242A860A00BB7F0D /* LaunchScreen.storyboard in Resources */,
+				3F33E0E02438F811006250B2 /* home@2x.png in Resources */,
+				3F33E0E52438F81C006250B2 /* thunder@3x.png in Resources */,
+				3F01E068243A248C0072280C /* poly@3x.png in Resources */,
 				3F890CFE242A860A00BB7F0D /* Assets.xcassets in Resources */,
-				3F890CFC242A860900BB7F0D /* Main.storyboard in Resources */,
+				3F01E069243A248C0072280C /* poly@1x.png in Resources */,
+				3F33E0ED24392E94006250B2 /* wrench@3x.png in Resources */,
+				3F33E0E72438F81C006250B2 /* thunder@2x.png in Resources */,
+				3F33E0E12438F811006250B2 /* home@3x.png in Resources */,
+				3F33E0EB24392E94006250B2 /* wrench@1x.png in Resources */,
+				3F33E0DD2438F626006250B2 /* home@1x.png in Resources */,
+				3F33E0EC24392E94006250B2 /* wrench@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,16 +592,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F3CF8202434C3F20089061C /* HeartRateModel.swift in Sources */,
-				3F3CF81E2434C3D20089061C /* TacxModel.swift in Sources */,
+				3F3CF8202434C3F20089061C /* HeartRateModule.swift in Sources */,
+				3F33E0EF243936B9006250B2 /* SensorModel.swift in Sources */,
+				3F3CF81E2434C3D20089061C /* TacxModule.swift in Sources */,
 				3F06EF2E242CFECF00602724 /* ViewController.swift in Sources */,
 				3FED3ADB24316B1500902F3D /* Wheely.xcdatamodeld in Sources */,
 				3F890CF5242A860800BB7F0D /* AppDelegate.swift in Sources */,
+				3F33E0C92438E0FD006250B2 /* SensorCell.swift in Sources */,
+				3F33E0CB2438E4BD006250B2 /* MenuBar.swift in Sources */,
 				3F3CF8222434C4010089061C /* PhysicsModel.swift in Sources */,
-				3F3CF81C2434C3C50089061C /* AccelerometerModel.swift in Sources */,
-				3F3CF81A2434C3B70089061C /* GPSModel.swift in Sources */,
+				3F3CF81C2434C3C50089061C /* AccelerometerModule.swift in Sources */,
+				3F3CF81A2434C3B70089061C /* GPSModule.swift in Sources */,
+				3F01E0602439FC430072280C /* FeedCell.swift in Sources */,
 				3F3CF8252434C43F0089061C /* Database.swift in Sources */,
+				3F33E0C72438E0DB006250B2 /* Extensions.swift in Sources */,
 				3F890CF7242A860900BB7F0D /* SceneDelegate.swift in Sources */,
+				3F01E062243A14290072280C /* PhysicsCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,14 +636,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		3F890CFA242A860900BB7F0D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3F890CFB242A860900BB7F0D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		3F890CFF242A860A00BB7F0D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
