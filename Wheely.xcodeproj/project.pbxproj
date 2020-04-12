@@ -13,7 +13,14 @@
 		3F01E067243A248C0072280C /* poly@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E064243A248C0072280C /* poly@2x.png */; };
 		3F01E068243A248C0072280C /* poly@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E065243A248C0072280C /* poly@3x.png */; };
 		3F01E069243A248C0072280C /* poly@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F01E066243A248C0072280C /* poly@1x.png */; };
+		3F01E06D243A36EB0072280C /* GraphFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E06C243A36EB0072280C /* GraphFeedCell.swift */; };
+		3F01E06F243A36F90072280C /* EnergyFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E06E243A36F90072280C /* EnergyFeedCell.swift */; };
+		3F01E071243A44B20072280C /* HomeFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E070243A44B20072280C /* HomeFeedCell.swift */; };
+		3F01E073243A453F0072280C /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E072243A453F0072280C /* HomeModel.swift */; };
+		3F01E075243A45980072280C /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F01E074243A45980072280C /* HomeCell.swift */; };
 		3F06EF2E242CFECF00602724 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF8242A860900BB7F0D /* ViewController.swift */; };
+		3F28E0EA243B9F6E008C06C4 /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F28E0E9243B9F6E008C06C4 /* SettingsLauncher.swift */; };
+		3F28E0EC243BA43E008C06C4 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F28E0EB243BA43E008C06C4 /* SettingsCell.swift */; };
 		3F33E0C72438E0DB006250B2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0C62438E0DB006250B2 /* Extensions.swift */; };
 		3F33E0C92438E0FD006250B2 /* SensorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0C82438E0FD006250B2 /* SensorCell.swift */; };
 		3F33E0CB2438E4BD006250B2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F33E0CA2438E4BD006250B2 /* MenuBar.swift */; };
@@ -35,6 +42,12 @@
 		3F3CF8202434C3F20089061C /* HeartRateModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF81F2434C3F20089061C /* HeartRateModule.swift */; };
 		3F3CF8222434C4010089061C /* PhysicsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8212434C4010089061C /* PhysicsModel.swift */; };
 		3F3CF8252434C43F0089061C /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3CF8242434C43F0089061C /* Database.swift */; };
+		3F4BD88E244092D100B19FC6 /* calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F4BD88B244092D100B19FC6 /* calendar@2x.png */; };
+		3F4BD88F244092D100B19FC6 /* calendar@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F4BD88C244092D100B19FC6 /* calendar@1x.png */; };
+		3F4BD890244092D100B19FC6 /* calendar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F4BD88D244092D100B19FC6 /* calendar@3x.png */; };
+		3F4BD8922440936100B19FC6 /* DateFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4BD8912440936100B19FC6 /* DateFeedCell.swift */; };
+		3F4BD894244093D700B19FC6 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4BD893244093D700B19FC6 /* DateCell.swift */; };
+		3F4BD8962440944100B19FC6 /* DateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4BD8952440944100B19FC6 /* DateModel.swift */; };
 		3F890CF5242A860800BB7F0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF4242A860800BB7F0D /* AppDelegate.swift */; };
 		3F890CF7242A860900BB7F0D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F890CF6242A860900BB7F0D /* SceneDelegate.swift */; };
 		3F890CFE242A860A00BB7F0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F890CFD242A860A00BB7F0D /* Assets.xcassets */; };
@@ -99,6 +112,13 @@
 		3F01E064243A248C0072280C /* poly@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@2x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@2x.png"; sourceTree = "<group>"; };
 		3F01E065243A248C0072280C /* poly@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@3x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@3x.png"; sourceTree = "<group>"; };
 		3F01E066243A248C0072280C /* poly@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poly@1x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/poly@1x.png"; sourceTree = "<group>"; };
+		3F01E06C243A36EB0072280C /* GraphFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFeedCell.swift; sourceTree = "<group>"; };
+		3F01E06E243A36F90072280C /* EnergyFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyFeedCell.swift; sourceTree = "<group>"; };
+		3F01E070243A44B20072280C /* HomeFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedCell.swift; sourceTree = "<group>"; };
+		3F01E072243A453F0072280C /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
+		3F01E074243A45980072280C /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
+		3F28E0E9243B9F6E008C06C4 /* SettingsLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
+		3F28E0EB243BA43E008C06C4 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		3F33E0C62438E0DB006250B2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		3F33E0C82438E0FD006250B2 /* SensorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorCell.swift; sourceTree = "<group>"; };
 		3F33E0CA2438E4BD006250B2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
@@ -122,6 +142,12 @@
 		3F3CF81F2434C3F20089061C /* HeartRateModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateModule.swift; sourceTree = "<group>"; };
 		3F3CF8212434C4010089061C /* PhysicsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsModel.swift; sourceTree = "<group>"; };
 		3F3CF8242434C43F0089061C /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		3F4BD88B244092D100B19FC6 /* calendar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "calendar@2x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/calendar@2x.png"; sourceTree = "<group>"; };
+		3F4BD88C244092D100B19FC6 /* calendar@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "calendar@1x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/calendar@1x.png"; sourceTree = "<group>"; };
+		3F4BD88D244092D100B19FC6 /* calendar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "calendar@3x.png"; path = "../../../../Downloads/pure-sugar-icons-pack-nitish-khagwal/icons/calendar@3x.png"; sourceTree = "<group>"; };
+		3F4BD8912440936100B19FC6 /* DateFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFeedCell.swift; sourceTree = "<group>"; };
+		3F4BD893244093D700B19FC6 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
+		3F4BD8952440944100B19FC6 /* DateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateModel.swift; sourceTree = "<group>"; };
 		3F890CF1242A860800BB7F0D /* Wheely.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wheely.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F890CF4242A860800BB7F0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3F890CF6242A860900BB7F0D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +245,9 @@
 			isa = PBXGroup;
 			children = (
 				3F890CFD242A860A00BB7F0D /* Assets.xcassets */,
+				3F4BD88C244092D100B19FC6 /* calendar@1x.png */,
+				3F4BD88B244092D100B19FC6 /* calendar@2x.png */,
+				3F4BD88D244092D100B19FC6 /* calendar@3x.png */,
 				3F01E066243A248C0072280C /* poly@1x.png */,
 				3F01E064243A248C0072280C /* poly@2x.png */,
 				3F01E065243A248C0072280C /* poly@3x.png */,
@@ -266,8 +295,10 @@
 		3F3BE258242BDF5800DC84CA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3F3CF8212434C4010089061C /* PhysicsModel.swift */,
+				3F01E072243A453F0072280C /* HomeModel.swift */,
 				3F33E0EE243936B9006250B2 /* SensorModel.swift */,
+				3F3CF8212434C4010089061C /* PhysicsModel.swift */,
+				3F4BD8952440944100B19FC6 /* DateModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -276,10 +307,17 @@
 			isa = PBXGroup;
 			children = (
 				3F890CFF242A860A00BB7F0D /* LaunchScreen.storyboard */,
-				3F33E0CA2438E4BD006250B2 /* MenuBar.swift */,
 				3F01E05F2439FC430072280C /* FeedCell.swift */,
+				3F01E070243A44B20072280C /* HomeFeedCell.swift */,
+				3F01E06C243A36EB0072280C /* GraphFeedCell.swift */,
+				3F01E06E243A36F90072280C /* EnergyFeedCell.swift */,
+				3F4BD8912440936100B19FC6 /* DateFeedCell.swift */,
+				3F01E074243A45980072280C /* HomeCell.swift */,
 				3F33E0C82438E0FD006250B2 /* SensorCell.swift */,
 				3F01E061243A14290072280C /* PhysicsCell.swift */,
+				3F4BD893244093D700B19FC6 /* DateCell.swift */,
+				3F28E0EB243BA43E008C06C4 /* SettingsCell.swift */,
+				3F33E0CA2438E4BD006250B2 /* MenuBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				3F890CF8242A860900BB7F0D /* ViewController.swift */,
+				3F28E0E9243B9F6E008C06C4 /* SettingsLauncher.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -486,9 +525,12 @@
 				3F33E0E62438F81C006250B2 /* thunder@1x.png in Resources */,
 				3F890D01242A860A00BB7F0D /* LaunchScreen.storyboard in Resources */,
 				3F33E0E02438F811006250B2 /* home@2x.png in Resources */,
+				3F4BD88E244092D100B19FC6 /* calendar@2x.png in Resources */,
+				3F4BD88F244092D100B19FC6 /* calendar@1x.png in Resources */,
 				3F33E0E52438F81C006250B2 /* thunder@3x.png in Resources */,
 				3F01E068243A248C0072280C /* poly@3x.png in Resources */,
 				3F890CFE242A860A00BB7F0D /* Assets.xcassets in Resources */,
+				3F4BD890244092D100B19FC6 /* calendar@3x.png in Resources */,
 				3F01E069243A248C0072280C /* poly@1x.png in Resources */,
 				3F33E0ED24392E94006250B2 /* wrench@3x.png in Resources */,
 				3F33E0E72438F81C006250B2 /* thunder@2x.png in Resources */,
@@ -592,14 +634,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F28E0EC243BA43E008C06C4 /* SettingsCell.swift in Sources */,
 				3F3CF8202434C3F20089061C /* HeartRateModule.swift in Sources */,
+				3F01E075243A45980072280C /* HomeCell.swift in Sources */,
+				3F4BD8962440944100B19FC6 /* DateModel.swift in Sources */,
+				3F28E0EA243B9F6E008C06C4 /* SettingsLauncher.swift in Sources */,
 				3F33E0EF243936B9006250B2 /* SensorModel.swift in Sources */,
 				3F3CF81E2434C3D20089061C /* TacxModule.swift in Sources */,
 				3F06EF2E242CFECF00602724 /* ViewController.swift in Sources */,
+				3F4BD8922440936100B19FC6 /* DateFeedCell.swift in Sources */,
 				3FED3ADB24316B1500902F3D /* Wheely.xcdatamodeld in Sources */,
 				3F890CF5242A860800BB7F0D /* AppDelegate.swift in Sources */,
 				3F33E0C92438E0FD006250B2 /* SensorCell.swift in Sources */,
+				3F4BD894244093D700B19FC6 /* DateCell.swift in Sources */,
+				3F01E071243A44B20072280C /* HomeFeedCell.swift in Sources */,
+				3F01E073243A453F0072280C /* HomeModel.swift in Sources */,
 				3F33E0CB2438E4BD006250B2 /* MenuBar.swift in Sources */,
+				3F01E06F243A36F90072280C /* EnergyFeedCell.swift in Sources */,
 				3F3CF8222434C4010089061C /* PhysicsModel.swift in Sources */,
 				3F3CF81C2434C3C50089061C /* AccelerometerModule.swift in Sources */,
 				3F3CF81A2434C3B70089061C /* GPSModule.swift in Sources */,
@@ -607,6 +658,7 @@
 				3F3CF8252434C43F0089061C /* Database.swift in Sources */,
 				3F33E0C72438E0DB006250B2 /* Extensions.swift in Sources */,
 				3F890CF7242A860900BB7F0D /* SceneDelegate.swift in Sources */,
+				3F01E06D243A36EB0072280C /* GraphFeedCell.swift in Sources */,
 				3F01E062243A14290072280C /* PhysicsCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

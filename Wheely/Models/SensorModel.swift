@@ -12,4 +12,5 @@ class SensorModel: NSObject {
     var graphView: LineChartView?
     var title: String?
     var type: String?
+    var data: LineChartData?
 }

@@ -12,12 +12,10 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     
     // Sensor objects.
     
-    var sensorModels: [SensorModel]?
-    var physicsModels: [PhysicsModel]?
-    
-    var sensorModelsDictionary = [String: SensorModel]()
-    
-    var type = "None"
+    var homeModels = [HomeModel]()
+    var sensorModels = [SensorModel]()
+    var physicsModels = [PhysicsModel]()
+    var dateModels = [DateModel]()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -28,89 +26,20 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         return collectionView
     }()
     
-    let cellId = "cellId"
-    
+    let feedId = "feedCellId"
+
     override func setupViews() {
         super.setupViews()
-        addSubview(collectionView)
-        addConstraintsWithFormat(format: "H:|[v0]|", views: collectionView)
-        addConstraintsWithFormat(format: "V:|[v0]|", views: collectionView)
-        
-        sensorModels = [SensorModel]()
-        physicsModels = [PhysicsModel]()
-        
-        if(type == "Sensor") {
-            let sensorModel1 = SensorModel()
-            var key = ""
-            sensorModel1.title = "Tacx - Sensor"
-            sensorModel1.type = "Tacx"
-            //sensorModel.graphView?.data = data
-            //sensorModel.graphView?.chartDescription?.text = "Tacx"
-            key = "Tacx"
-            sensorModelsDictionary[key] = sensorModel1
-            sensorModels?.append(sensorModel1)
-            
-            let sensorModel2 = SensorModel()
-            sensorModel2.title = "GPS - Sensor"
-            sensorModel2.type = "GPS"
-            //sensorModel.graphView?.data = data
-            //sensorModel.graphView?.chartDescription?.text = "Tacx"
-            key = "GPS"
-            sensorModelsDictionary[key] = sensorModel2
-            sensorModels?.append(sensorModel2)
-            
-            let sensorModel3 = SensorModel()
-            sensorModel3.title = "Accelerometer - Sensor"
-            sensorModel3.type = "Accelerometer"
-            //sensorModel.graphView?.data = data
-            //sensorModel.graphView?.chartDescription?.text = "Tacx"
-            key = "Accelerometer"
-            sensorModelsDictionary[key] = sensorModel3
-            sensorModels?.append(sensorModel3)
-            
-            let sensorModel4 = SensorModel()
-            sensorModel4.title = "HeartRate - Sensor"
-            sensorModel4.type = "HeartRate"
-            //sensorModel.graphView?.data = data
-            //sensorModel.graphView?.chartDescription?.text = "Tacx"
-            key = "HeartRate"
-            sensorModelsDictionary[key] = sensorModel4
-            sensorModels?.append(sensorModel4)
-            
-            collectionView.register(SensorCell.self, forCellWithReuseIdentifier: cellId)
-        } else if (type == "Energy") {
 
-            let physicsModel = PhysicsModel()
-            physicsModel.title = "Energy Expenditure"
-            physicsModels?.append(physicsModel)
-            collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: cellId)
-        }
-        
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if(self.type == "Sensor") {
-            return sensorModels?.count ?? 0
-        } else if(self.type == "Energy") {
-            return physicsModels?.count ?? 0
-        }
         return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-      
-        if(self.type == "Sensor") {
-            let cellSensor = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! SensorCell
-            cellSensor.sensor = sensorModels?[indexPath.item]
-            return cellSensor
-        } else if(self.type == "Energy") {
-            let physicsCell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! PhysicsCell
-            physicsCell.energy = physicsModels?[indexPath.item]
-            return physicsCell
-        }
-        return UICollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>NSMainStoryboardFile</key>
-	<string>Main</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -24,10 +20,24 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Some string with more than 12 characters</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Some string with more than 12 characters</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Some string with more than 12 characters</string>
+	<key>NSMainStoryboardFile</key>
+	<string>Main</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -47,9 +57,10 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>location</string>
+		<string>bluetooth-central</string>
 		<string>external-accessory</string>
 		<string>fetch</string>
+		<string>location</string>
 		<string>processing</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -69,22 +80,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>WKBackgroundModes</key>
 	<array>
 		<string>physical-therapy</string>
 		<string>workout-processing</string>
 	</array>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Some string with more than 12 characters</string>
 </dict>
 </plist>

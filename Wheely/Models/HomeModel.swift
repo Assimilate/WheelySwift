@@ -1,14 +1,13 @@
 //
-//  PhysicsModel.swift
+//  HomeModel.swift
 //  Wheely
 //
-//  Created by Student on 2020-04-01.
+//  Created by Student on 2020-04-05.
 //  Copyright © 2020 Daniel Abella. All rights reserved.
 //
 
 import UIKit
 
-class PhysicsModel: NSObject {
-    var view: UIView?
+class HomeModel: NSObject {
     var title: String?
 }

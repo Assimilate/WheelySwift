@@ -17,8 +17,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     @IBAction func buttonWatchSend() {
         print("Sampling...")
         querySingleSample()
-        
-        
     }
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
@@ -31,6 +29,8 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
         print("Received activation message")
         if let messageReceived = message["activate"] as? Bool {
             if(messageReceived) {
+                
+                
                 configureWorkout()
             } else {
                 stopWorkout()
@@ -43,11 +43,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-        
-        // Configure interface objects here.
-        
         configureWatchSession()
-        
     }
     
     override func willActivate() {
@@ -123,7 +119,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
                 self.collectCurrentHeartRateSample(currentSampleType: samples!, deleted: deletedObjects!)
                 
             }
-            
         }
         
         anchoredQuery!.updateHandler = { (query, samples, deletedObjects, anchor, error) -> Void in

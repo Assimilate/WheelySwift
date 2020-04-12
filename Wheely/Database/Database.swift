@@ -13,12 +13,17 @@ class Database {
     
     //--> Reading/Writing using CoreData.
     
+    // Entities
+    
+    let entities = [String: NSManagedObject]()
+    
     // Save velocities to entity.
     
     let appDelegate: AppDelegate?
     
     init(appDelegate: AppDelegate) {
         self.appDelegate = appDelegate
+        
     }
     
     
@@ -68,6 +73,28 @@ class Database {
         }
     }
     
+    // Save sessions date data.
+    
+    func saveData(startDate: Date, endDate:Date, entity: String) {
+        
+        let managedContext = self.appDelegate!.persistentContainer.viewContext
+        
+        let entity = NSEntityDescription.entity(forEntityName: entity, in: managedContext)!
+        
+        let object = NSManagedObject(entity: entity, insertInto: managedContext)
+        
+        object.setValue(startDate, forKeyPath: "startDate")
+        object.setValue(endDate, forKeyPath: "endDate")
+        
+        do {
+            try managedContext.save()
+            
+            
+        } catch let error as NSError{
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+    
     // Save heart-rate data to entity.
     
     func saveData(heartRate: Double, timeDate: Date, entity: String) {
@@ -103,61 +130,23 @@ class Database {
             
             let velocities = try managedContext.fetch(readRequest)
             for data in velocities as [NSManagedObject]{
-                let managedObjectData:NSManagedObject = data
-                managedContext.delete(managedObjectData)
+                managedContext.delete(data)
             }
+            try managedContext.save()
         } catch let error as NSError {
             print("Could not read. \(error), \(error.userInfo)")
         }
     }
     
-    func readData(entity: String, type: String) {
+    func readDataBetweenDates(entity: String, type: String, startDate: NSDate, endDate: NSDate) -> [NSManagedObject] {
         
         
         let managedContext = self.appDelegate!.persistentContainer.viewContext
         
         let readRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
-        
-        do {
-            
-            let isEqualAcceleration = (type == "acceleration")
-            let isEqualVelocity = (type == "velocity")
-            let isEqualHeartRate = (type == "heartRate")
-            
-            if(isEqualVelocity) {
-                print("Reading velocity...")
-                let velocities = try managedContext.fetch(readRequest)
-                for data in velocities as [NSManagedObject]{
-                    print(data.value(forKey: "velocity") as! Double)
-                    print(data.value(forKey: "time") as! Date)
-                }
-            } else if(isEqualAcceleration) {
-                print("Reading acceleration...")
-                let accelerations = try managedContext.fetch(readRequest)
-                for data in accelerations as [NSManagedObject]{
-                    print(data.value(forKey: "accelerationX") as! Double)
-                    print(data.value(forKey: "accelerationY") as! Double)
-                    print(data.value(forKey: "accelerationZ") as! Double)
-                    print(data.value(forKey: "time") as! Date)
-                }
-            } else if(isEqualHeartRate) {
-                print("Reading heart rate...")
-                let heartRates = try managedContext.fetch(readRequest)
-                for data in heartRates as [NSManagedObject]{
-                    print(data.value(forKey: "heartRate") as! Double)
-                    print(data.value(forKey: "time") as! Date)
-                }
-            }
-            
-        } catch let error as NSError {
-            print("Could not read. \(error), \(error.userInfo)")
-        }
-    }
-    
-    func getData(entity: String, type: String) -> [NSManagedObject] {
-        let managedContext = self.appDelegate!.persistentContainer.viewContext
-        
-        let readRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
+        let sort = NSSortDescriptor(key: "time", ascending: true)
+        readRequest.sortDescriptors = [sort]
+        readRequest.predicate = NSPredicate(format: "(time >= %@) AND (time <= %@)", startDate, endDate)
         var objectDataToReturn = [NSManagedObject]()
         do {
             
@@ -166,15 +155,12 @@ class Database {
             let isEqualHeartRate = (type == "heartRate")
             
             if(isEqualVelocity) {
-                print("Reading velocity...")
                 let velocities = try managedContext.fetch(readRequest)
-                objectDataToReturn = velocities;
+                objectDataToReturn = velocities
             } else if(isEqualAcceleration) {
-                print("Reading acceleration...")
                 let accelerations = try managedContext.fetch(readRequest)
                 objectDataToReturn = accelerations
             } else if(isEqualHeartRate) {
-                print("Reading heart rate...")
                 let heartRates = try managedContext.fetch(readRequest)
                 objectDataToReturn = heartRates
             }
@@ -184,6 +170,55 @@ class Database {
         }
         return objectDataToReturn
     }
+    
+    func getAllData(entity: String, type: String) -> [NSManagedObject] {
+        let managedContext: NSManagedObjectContext = self.appDelegate!.persistentContainer.viewContext
+        
+        var key = "time"
+        
+        if(entity == "Session") {
+            key = "startDate"
+        }
+        
+        let readRequest: NSFetchRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
+        let sort: NSSortDescriptor = NSSortDescriptor(key: key, ascending: true)
+        readRequest.sortDescriptors = [sort]
+        var objectDataToReturn: [NSManagedObject] = [NSManagedObject]()
+        managedContext.performAndWait {
+            
+            do {
+                
+                let isEqualAcceleration = (type == "acceleration")
+                let isEqualVelocity = (type == "velocity")
+                let isEqualHeartRate = (type == "heartRate")
+                let isEqualSession = (type == "session")
+                
+                if(isEqualVelocity) {
+                    let velocities = try managedContext.fetch(readRequest)
+                    objectDataToReturn = velocities
+                } else if(isEqualAcceleration) {
+                    let accelerations = try managedContext.fetch(readRequest)
+                    objectDataToReturn = accelerations
+                } else if(isEqualHeartRate) {
+                    let heartRates = try managedContext.fetch(readRequest)
+                    objectDataToReturn = heartRates
+                } else if(isEqualSession) {
+                    let sessions: [NSManagedObject] = try managedContext.fetch(readRequest) as! [Session]
+                    objectDataToReturn = sessions
+                }
+                
+            } catch let error as NSError {
+                print("Could not read. \(error), \(error.userInfo)")
+            }
+        }
+        
+        
+        return objectDataToReturn
+    }
+    
+    
+    
+    
     
     //<-- End of Reading/Writing using CoreData.
     

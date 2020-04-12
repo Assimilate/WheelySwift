@@ -17,8 +17,10 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var database: Database?
     
     init(viewController: HomeController, database: Database) {
+        super.init()
         self.viewController = viewController
         self.database = database
+        
     }
     
     // Variables.
@@ -32,17 +34,32 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var centralManager: CBCentralManager?
     var peripheralDevice: CBPeripheral?
     
+    let centralQueue: DispatchQueue = DispatchQueue(label: "com.wheely.centralQueue", attributes: .concurrent)
+    
+    var singletonSet = false
+    var sessionOn = false
+
     //--> BLE related functions and variables, communicating with the TacX Speed and Cadence sensor.
     
     
     func startBLE() {
-        let centralQueue: DispatchQueue = DispatchQueue(label: "com.wheely.centralQueue", attributes: .concurrent)
-        centralManager = CBCentralManager(delegate: self, queue: centralQueue)
+        if(singletonSet == false) {
+            sessionOn = true
+            centralManager = CBCentralManager(delegate: self, queue: centralQueue)
+            singletonSet = true
+        } else {
+            sessionOn = true
+            centralManager?.scanForPeripherals(withServices: [BLE_Cycling_Speed_And_Cadence_Service])
+        }
     }
     
     func stopBLE() {
-        centralManager?.cancelPeripheralConnection(peripheralDevice!)
-        updateController()
+        if(peripheralDevice?.state == .connected) {
+            sessionOn = false
+            centralManager?.cancelPeripheralConnection(peripheralDevice!)
+            updateController()
+        }
+        
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -68,7 +85,7 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print(peripheral.name!)
+        print("Scanning for peripherals")
         decodePeripheralState(peripheralState: peripheral.state)
         peripheralDevice = peripheral
         peripheralDevice?.delegate = self
@@ -77,18 +94,21 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("Connected.")
         peripheralDevice?.discoverServices([BLE_Cycling_Speed_And_Cadence_Service])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected.")
-        centralManager?.scanForPeripherals(withServices: [BLE_Cycling_Speed_And_Cadence_Service])
+        print(sessionOn)
+        if(sessionOn == true) {
+            centralManager?.scanForPeripherals(withServices: [BLE_Cycling_Speed_And_Cadence_Service])
+        }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         for service in peripheral.services! {
             if service.uuid == BLE_Cycling_Speed_And_Cadence_Service {
-                print("Service: \(service)")
                 peripheral.discoverCharacteristics(nil, for: service)
             }
         }
@@ -96,7 +116,6 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for characteristic in service.characteristics! {
-            print(characteristic)
             
             if characteristic.uuid == BLE_CSC_Measurement_Characteristic {
                 peripheral.setNotifyValue(true, for: characteristic)
@@ -191,7 +210,7 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         previousVelocity = currentVelocity
         currentVelocity = ((wheelCircumference * doubleDifferenceInRotations)/((doubleTimeSinceLastRevolution) / 1000)) // m/s
         
-        if(currentVelocity != nil && currentVelocity > 0) {
+        if(currentVelocity != nil && currentVelocity > 0 && currentVelocity.isNaN != true) {
             database!.saveData(velocityNumber: self.currentVelocity, timeDate: self.BLEDate, entity: "Tacx")
             
         }
@@ -234,9 +253,11 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     //--> Functions related to updating the controller with new values.
     
     func updateController() {
-        DispatchQueue.main.async {
-            self.viewController?.updateFromTacx(data: self.database!.getData(entity: "Tacx", type: "velocity"))
-        }
+       
+    }
+    
+    func deleteTacxData() {
+        self.database!.deleteAllDataFromEntity(entity: "Tacx")
     }
     
 }

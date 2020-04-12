@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import Charts
+import CoreData
 
 class BaseCell: UICollectionViewCell {
+    
+    var homeController: HomeController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -26,14 +30,21 @@ class BaseCell: UICollectionViewCell {
 
 class SensorCell: BaseCell {
     
+    
     var sensor: SensorModel? {
         didSet {
-            descriptionLabel.text = sensor?.title
+            print("Did set sensor model")
+            self.descriptionLabel.text = self.sensor?.title
+            self.chartView.data = self.sensor?.data
+            self.chartView.chartDescription?.text = self.sensor?.title
+            chartView.data?.notifyDataChanged()
+            chartView.notifyDataSetChanged()
+            self.reloadInputViews()
         }
     }
     
-    let chartView: UIView = {
-        let view = UIView()
+    var chartView: LineChartView = {
+        let view = LineChartView()
         view.backgroundColor = .systemGray5
         return view
     }()
@@ -51,6 +62,10 @@ class SensorCell: BaseCell {
     }()
     
     override func setupViews() {
+        super.setupViews()
+        
+        print("Graph setup...")
+        
         addSubview(chartView)
         addSubview(separatorView)
         addSubview(descriptionLabel)
@@ -60,6 +75,6 @@ class SensorCell: BaseCell {
         addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(40)]-[v2(1)]|", views: chartView, descriptionLabel, separatorView)
         addConstraintsWithFormat(format: "H:|[v0]|", views: separatorView)
         
-        
     }
+    
 }

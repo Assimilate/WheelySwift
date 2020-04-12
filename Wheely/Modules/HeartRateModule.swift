@@ -40,12 +40,12 @@ class HeartRateModule: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         if let messageReceivedDate = message["HeartRateStartDate"] as? Date {
             self.heartRateDateFirst = (messageReceivedDate as? Date)!
-            print(self.heartRateDateFirst)
         }
         if let messageReceivedHeartRate = message["HeartRateBPM"] as? Double {
             DispatchQueue.main.async{
-                self.database!.saveData(heartRate: messageReceivedHeartRate, timeDate: self.heartRateDateSecond, entity: "HeartRate")
-                self.viewController?.updateFromHeartRateModel(heartRate: "\(messageReceivedHeartRate)")
+                if(messageReceivedHeartRate.isNaN != true) {
+                    self.database!.saveData(heartRate: messageReceivedHeartRate, timeDate: self.heartRateDateSecond, entity: "HeartRate")
+                }
             }
         }
     }
@@ -53,12 +53,12 @@ class HeartRateModule: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         if let messageReceivedDate = message["HeartRateStartDate"] as? Date {
             self.heartRateDateSecond = (messageReceivedDate as? Date)!
-            print(self.heartRateDateSecond)
         }
         if let messageReceivedHeartRate = message["HeartRateBPM"] as? Double {
             DispatchQueue.main.async{
-                self.database!.saveData(heartRate: messageReceivedHeartRate, timeDate: self.heartRateDateSecond, entity: "HeartRate")
-                self.viewController?.updateFromHeartRateModel(heartRate: "\(messageReceivedHeartRate)")
+                if(messageReceivedHeartRate.isNaN != true) {
+                    self.database!.saveData(heartRate: messageReceivedHeartRate, timeDate: self.heartRateDateSecond, entity: "HeartRate")
+                }
             }
         }
     }
@@ -66,16 +66,19 @@ class HeartRateModule: NSObject, WCSessionDelegate {
     //--> Healthkit related.
     
     func startWatchSession() {
+        
         if WCSession.isSupported() {
             
             self.session.delegate = self
             self.session.activate()
         }
+        authorizeDataCollection()
         activateCollectionInWatch()
     }
     
     func stopWatchSession() {
         deactivateCollectionInWatch()
+        updateController()
     }
     
     let healthStore = HKHealthStore()
@@ -152,6 +155,14 @@ class HeartRateModule: NSObject, WCSessionDelegate {
         let hour = calendar.component(.hour, from: currentDateHeartRate)
         let minute = calendar.component(.minute, from: currentDateHeartRate)
         return currentDateHeartRate
+    }
+    
+    func updateController() {
+       
+    }
+    
+    func deleteHeartRateData() {
+        self.database!.deleteAllDataFromEntity(entity: "HeartRate")
     }
     
 }

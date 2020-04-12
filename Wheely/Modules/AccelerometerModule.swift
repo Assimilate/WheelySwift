@@ -40,11 +40,10 @@ class AccelerometerModule {
                 self.dateAccelerometer = self.getCurrentTimeAccelerometer()
                 
                 DispatchQueue.main.async {
-                    if(self.accelerationX != nil && self.accelerationY != nil && self.accelerationZ != nil) {
+                    if(self.accelerationX.isNaN != true && self.accelerationY.isNaN != true && self.accelerationZ.isNaN != true) {
                         self.database!.saveData(accelerationX: self.accelerationX, accelerationY: self.accelerationX, accelerationZ: self.accelerationX, timeDate: self.dateAccelerometer, entity: "Accelerometer")
                     }
                     
-                    self.viewController?.updateFromAccelerometerModel(acceleration: "\(self.accelerationY)")
                 }
             }
             
@@ -54,6 +53,8 @@ class AccelerometerModule {
     func stopAccelerometer() {
         print("Stopping accelerometer...")
         motionManager.stopDeviceMotionUpdates()
+        updateController()
+        
     }
     
     // Accelerometer
@@ -69,5 +70,12 @@ class AccelerometerModule {
     }
     
     //<-- End accelerometer related.
+    func updateController() {
+      
+    }
+    
+    func deleteAccelerometerData() {
+        self.database!.deleteAllDataFromEntity(entity: "Accelerometer")
+    }
     
 }

@@ -37,8 +37,9 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
     }
     
     func stopGPS() {
-           print("Stopping GPS...")
-           self.locationManager.stopUpdatingLocation()
+        print("Stopping GPS...")
+        self.locationManager.stopUpdatingLocation()
+        updateController()
     }
     
     var locationPrevious = CLLocation()
@@ -77,7 +78,7 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         distanceInMetres = coordinateTo.distance(from: coordinateFrom)
         print("Distance: \(distanceInMetres)")
         
-            
+        
         self.deriveVelocityGPS(distance: self.distanceInMetres)
         
         
@@ -90,12 +91,15 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         currentVelocityGPS = distanceInMetres/timeIntervalBetweenPoints
         
         DispatchQueue.main.async {
-            if(self.currentVelocityGPS != nil && self.currentVelocityGPS > 0) {
-                self.database!.saveData(velocityNumber: self.currentVelocityGPS, timeDate: self.currentTimeGPS, entity: "GPS")
+            if(self.currentVelocityGPS < 100) { // In case insane values pop in.
+                if(self.currentVelocityGPS.isNaN != true && self.currentVelocityGPS.isNaN != true) {
+                    self.database!.saveData(velocityNumber: self.currentVelocityGPS, timeDate: self.currentTimeGPS, entity: "GPS")
+                }
+                
+                self.viewController?.updateFromGPSModule(velocity: "\(self.currentVelocityGPS)")
             }
             
-            self.viewController?.updateFromGPSModel(velocity: "\(self.currentVelocityGPS)")
-           
+            
             self.previousTimeGPS = self.currentTimeGPS
         }
     }
@@ -110,6 +114,16 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         let hour = calendar.component(.hour, from: currentDateGPS)
         let minute = calendar.component(.minute, from: currentDateGPS)
         return currentDateGPS
+    }
+    
+    //--> Functions related to updating the controller with new values.
+    
+    func updateController() {
+
+    }
+    
+    func deleteGPSData() {
+        self.database!.deleteAllDataFromEntity(entity: "GPS")
     }
     
     //<-- End of GPS related variables and functions.

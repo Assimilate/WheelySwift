@@ -35,15 +35,16 @@ class PhysicsCell: BaseCell {
     }()
     
     override func setupViews() {
-           addSubview(chartView)
-           addSubview(separatorView)
-           addSubview(descriptionLabel)
-           
-           addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: chartView)
-           addConstraintsWithFormat(format: "H:|-16-[v0(40)]-16-|", views: descriptionLabel)
-           addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(40)]-[v2(1)]|", views: chartView, descriptionLabel, separatorView)
-           addConstraintsWithFormat(format: "H:|[v0]|", views: separatorView)
-           
-           
-       }
+        super.setupViews()
+        addSubview(chartView)
+        addSubview(separatorView)
+        addSubview(descriptionLabel)
+        
+        addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: chartView)
+        addConstraintsWithFormat(format: "H:|-16-[v0(40)]-16-|", views: descriptionLabel)
+        addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(40)]-[v2(1)]|", views: chartView, descriptionLabel, separatorView)
+        addConstraintsWithFormat(format: "H:|[v0]|", views: separatorView)
+        
+        
+    }
 }
