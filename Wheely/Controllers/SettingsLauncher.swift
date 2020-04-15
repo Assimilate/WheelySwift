@@ -61,8 +61,8 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
                     self.homeController?.scrollToMenuIndex(menuIndex: 3)
                 } else if(settingsModel.name == "Export all data") {
                     self.homeController?.exportAllData()
-                } else {
-                    
+                } else if(settingsModel.name == "User profile") {
+                    self.homeController?.showUserProfile()
                 }
             }
         }
@@ -77,7 +77,7 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     var cellHeight: CGFloat = 50
     
     let settingsModels: [SettingsModel] = {
-        return [SettingsModel(name: "Delete all data"), SettingsModel(name: "Choose graph dates"), SettingsModel(name: "Export all data")]
+        return [SettingsModel(name: "Delete all data"), SettingsModel(name: "Choose graph dates"), SettingsModel(name: "Export all data"), SettingsModel(name: "User profile")]
     }()
     
     override init() {

@@ -491,6 +491,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         return totalExportContent
     }
+    
+    func showUserProfile() {
+        let profileController = ProfileController()
+        profileController.modalPresentationStyle = .fullScreen
+        present(profileController, animated: true) {
+            // Might use later.
+        }
+    }
 }
 
 

@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         UINavigationBar.appearance().barTintColor = .orange
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        
+
         
         return true
     }
