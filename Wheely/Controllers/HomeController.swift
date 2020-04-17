@@ -14,7 +14,7 @@ import Charts
 import MessageUI
 
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, MFMailComposeViewControllerDelegate {
-    
+        
     
     //-> Variables and functions relating to UI components.
     
@@ -29,7 +29,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     // Collection view variables.
     
     let ids = ["homeFeedCellId", "graphFeedCellId", "energyFeedCellId", "dateFeedCellId"]
-    let modelNames = ["Tacx", "GPS", "Accelerometer", "HeartRate"]
+    let modelNames = ["Tacx", "GPS", "Accelerometer", "PushRate", "HeartRate"]
     
     var cellsDictionary = [String: UICollectionViewCell]()
     
@@ -48,13 +48,16 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var homeModel: HomeModel? = nil
     
     // Models in graph feed
-    var tacxModel: SensorModel? = nil
-    var gpsModel: SensorModel? = nil
+    var tacxModelVelocity: SensorModel? = nil
+    var gpsModelVelocity: SensorModel? = nil
+    var gpsModelAltitude: SensorModel? = nil
     var accelerometerModel: SensorModel? = nil
     var heartRateModel: SensorModel? = nil
+    var pushRateModel: SensorModel? = nil
     
     // Models in energy feed
-    var physicsModel: PhysicsModel? = nil
+    var physicsModelTacx: PhysicsModel? = nil
+    var physicsModelGPS: PhysicsModel? = nil
     
     // Models in date feed
     var dateModel: DateModel? = nil
@@ -118,18 +121,24 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         homeModel = HomeModel()
         homeModels.append(homeModel!)
         
-        tacxModel = SensorModel()
-        gpsModel = SensorModel()
+        tacxModelVelocity = SensorModel()
+        gpsModelVelocity = SensorModel()
+        gpsModelAltitude = SensorModel()
         accelerometerModel = SensorModel()
+        pushRateModel = SensorModel()
         heartRateModel = SensorModel()
         
-        sensorModels.append(tacxModel!)
-        sensorModels.append(gpsModel!)
+        sensorModels.append(tacxModelVelocity!)
+        sensorModels.append(gpsModelVelocity!)
+        sensorModels.append(gpsModelAltitude!)
         sensorModels.append(accelerometerModel!)
+        sensorModels.append(pushRateModel!)
         sensorModels.append(heartRateModel!)
         
-        physicsModel = PhysicsModel()
-        physicsModels.append(physicsModel!)
+        physicsModelTacx = PhysicsModel()
+        physicsModelGPS = PhysicsModel()
+        physicsModels.append(physicsModelTacx!)
+        physicsModels.append(physicsModelGPS!)
         
         dateModel = DateModel()
         dateModels.append(dateModel!)
@@ -214,28 +223,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     //--> Functions related to getting updates from the models.
     
-    func updateFromTacxModel() {
-        tacxModule?.updateController()
-    }
-    
-    func updateFromGPSModule(velocity: String) {
-        //self.gpsVelocityLabel.text = velocity
-    }
-    
-    func updateFromAccelerometerModule(acceleration: String) {
-        //self.accelerometerLabel.text = acceleration
-    }
-    
-    func updateFromHeartRateModule(heartRate: String) {
-        //self.heartRateLabel.text = heartRate
-    }
-    
-    func updateFromPhysicsModule(energyExpenditure: String) {
-        // TODO
-    }
-    
     var lineChartEntry = [ChartDataEntry]()
-    func makeLineChartEntry(data: [NSManagedObject], indexOfModule: Int) -> [ChartDataEntry]{
+    func makeLineChartEntry(data: [NSManagedObject], key: String) -> [ChartDataEntry]{
         lineChartEntry.removeAll()
         var counter = 1
         var startTime = 0
@@ -253,16 +242,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             var value = ChartDataEntry()
             
-            if(indexOfModule == 2) { // Accelerometer
-                let acceleration = object.value(forKey: "accelerationY")
-                value = ChartDataEntry(x: Double(Int(currentTimeInSeconds) - startTime + 1), y: acceleration as! Double)
-            } else if(indexOfModule == 3) {
-                let heartRate = object.value(forKey: "heartRate")
-                value = ChartDataEntry(x: Double(Int(currentTimeInSeconds) - startTime + 1), y: heartRate as! Double)
-            } else {
-                let velocity = object.value(forKey: "velocity")
-                value = ChartDataEntry(x: Double(Int(currentTimeInSeconds) - startTime + 1), y: velocity as! Double)
-            }
+            let valueOfObject = object.value(forKey: key)
+            value = ChartDataEntry(x: Double(Int(currentTimeInSeconds) - startTime + 1), y: valueOfObject as! Double)
+            
             
             lineChartEntry.append(value)
             counter+=1
@@ -307,12 +289,6 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         settingsLauncher.showSettings()
     }
     
-    
-    
-    func showControllerForSettings(settingsModel: SettingsModel) {
-        
-    }
-    
     var startDate = Date()
     var endDate = Date()
     
@@ -335,7 +311,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         tacxModule?.stopBLE()
         gpsModule?.stopGPS()
         accelerometerModule?.stopAccelerometer()
-        heartRateModule?.stopWatchSession()
+        heartRateModule?.stopWatchSession(endDate: self.endDate)
         saveSessionToDatabase()
         
     }
@@ -347,7 +323,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         accelerometerModule?.deleteAccelerometerData()
         heartRateModule?.deleteHeartRateData()
         database!.deleteAllDataFromEntity(entity: "Session")
-
+        
     }
     
     func saveSessionToDatabase() {
@@ -373,20 +349,43 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return sessions
     }
     
-    func makeSensorModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int) -> SensorModel {
+    func makeSensorModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int, key: String) -> SensorModel {
         let model = SensorModel()
+        
+        if(entity == "PushCount") {
+            print("sDate: \(startDate) eDate: \(endDate)")
+        }
         
         let newData = database!.readDataBetweenDates(entity: entity, type: type, startDate: startDate as NSDate, endDate: endDate as NSDate)
         
-        let lineOne = LineChartDataSet(entries: makeLineChartEntry(data: newData, indexOfModule: indexOfModule), label: modelNames[indexOfModule])
+        if(entity == "PushCount") {
+            print("New data received: \(newData)")
+        }
+        
+        let lineOne = LineChartDataSet(entries: makeLineChartEntry(data: newData, key: key), label: modelNames[indexOfModule])
         lineOne.colors = [NSUIColor.blue]
         
         let data = LineChartData()
         data.addDataSet(lineOne)
         
         model.data = data
-        model.title = modelNames[indexOfModule]
+        model.title = modelNames[indexOfModule] + " : " + key
         
+        return model
+    }
+    
+    func makePhysicsModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int, key: String, title: String) -> PhysicsModel {
+        let model = PhysicsModel()
+        
+        let data = database!.readDataBetweenDates(entity: entity, type: type, startDate: startDate as NSDate, endDate: endDate as NSDate)
+        var totalDistance = Double()
+        
+        for object in data {
+            let distance = object.value(forKey: key) as! Double
+            totalDistance = distance
+        }
+        model.distance = totalDistance
+        model.title = title
         return model
     }
     
@@ -411,16 +410,29 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.dateModels.removeAll()
             self.dateModels.append(dateModel)
             
-            let tacxModel = self.makeSensorModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0)
-            let gpsModel = self.makeSensorModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1)
-            let accelerometerModel = self.makeSensorModelFromDatabase(entity: "Accelerometer", type: "acceleration", startDate: startDate, endDate: endDate, indexOfModule: 2)
-            let heartRateModel = self.makeSensorModelFromDatabase(entity: "HeartRate", type: "heartRate", startDate: startDate, endDate: endDate, indexOfModule: 3)
+            let tacxModelVelocity = self.makeSensorModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "velocity")
+            let gpsModelVelocity = self.makeSensorModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "velocity")
+            let gpsModelAltitude = self.makeSensorModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "altitude")
+            let accelerometerModel = self.makeSensorModelFromDatabase(entity: "Accelerometer", type: "acceleration", startDate: startDate, endDate: endDate, indexOfModule: 2, key: "accelerationY")
+            let pushRateModel = self.makeSensorModelFromDatabase(entity: "PushCount", type: "pushRate", startDate: startDate, endDate: endDate, indexOfModule: 3, key: "pushCount")
+            let heartRateModel = self.makeSensorModelFromDatabase(entity: "HeartRate", type: "heartRate", startDate: startDate, endDate: endDate, indexOfModule: 4, key: "heartRate")
             
             self.sensorModels.removeAll()
-            self.sensorModels.append(tacxModel)
-            self.sensorModels.append(gpsModel)
+            self.sensorModels.append(tacxModelVelocity)
+            self.sensorModels.append(gpsModelVelocity)
+            self.sensorModels.append(gpsModelAltitude)
             self.sensorModels.append(accelerometerModel)
+            self.sensorModels.append(pushRateModel)
             self.sensorModels.append(heartRateModel)
+            
+            let physicsModelTacx = self.makePhysicsModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "distance", title: "Tacx distance travelled")
+            let physicsModelGPS = self.makePhysicsModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "distance", title: "GPS distance travelled")
+            
+            self.physicsModels.removeAll()
+            self.physicsModels.append(physicsModelTacx)
+            self.physicsModels.append(physicsModelGPS)
+            
+            
         }
     }
     
@@ -494,6 +506,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func showUserProfile() {
         let profileController = ProfileController()
+        profileController.database = self.database
         profileController.modalPresentationStyle = .fullScreen
         present(profileController, animated: true) {
             // Might use later.

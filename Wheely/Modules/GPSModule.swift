@@ -43,6 +43,7 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
     }
     
     var locationPrevious = CLLocation()
+    var currentAltitude = Double()
     
     var currentTimeGPS = Date()
     var previousTimeGPS = Date()
@@ -54,7 +55,7 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
                 //print("New location is \(location)")
                 
                 self.deriveGPSDistance(latitudeFrom: self.locationPrevious.coordinate.latitude, longitudeFrom: self.locationPrevious.coordinate.longitude, latitudeTo: location.coordinate.latitude, longitudeTo: location.coordinate.longitude)
-                
+                self.currentAltitude = location.altitude
                 
                 
                 self.locationPrevious = location
@@ -64,7 +65,8 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         }
     }
     
-    var distanceInMetres = Double()
+    var distanceInMetres = Double(0)
+    var totalDistance = Double()
     
     func deriveGPSDistance(latitudeFrom: Double, longitudeFrom: Double, latitudeTo: Double, longitudeTo: Double) {
         let coordinateFrom = CLLocation(latitude: latitudeFrom, longitude: longitudeFrom)
@@ -76,6 +78,9 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         //        print("LongTo: \(longitudeTo)")
         
         distanceInMetres = coordinateTo.distance(from: coordinateFrom)
+        if(distanceInMetres < 1000) {
+            totalDistance += distanceInMetres
+        }
         print("Distance: \(distanceInMetres)")
         
         
@@ -93,10 +98,8 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         DispatchQueue.main.async {
             if(self.currentVelocityGPS < 100) { // In case insane values pop in.
                 if(self.currentVelocityGPS.isNaN != true && self.currentVelocityGPS.isNaN != true) {
-                    self.database!.saveData(velocityNumber: self.currentVelocityGPS, timeDate: self.currentTimeGPS, entity: "GPS")
+                    self.database!.saveData(velocityNumber: self.currentVelocityGPS, distance: self.totalDistance, altitude: self.currentAltitude, timeDate: self.currentTimeGPS, entityName: "GPS")
                 }
-                
-                self.viewController?.updateFromGPSModule(velocity: "\(self.currentVelocityGPS)")
             }
             
             

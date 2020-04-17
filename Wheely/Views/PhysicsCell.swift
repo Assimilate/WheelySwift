@@ -12,19 +12,24 @@ class PhysicsCell: BaseCell {
     
     var energy: PhysicsModel? {
         didSet {
+            valueLabel.text = energy?.distance?.string
             descriptionLabel.text = energy?.title
+            self.reloadInputViews()
         }
     }
     
-    let chartView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray5
-        return view
+    let valueLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .systemGray6
+        label.textAlignment = .center
+        return label
     }()
     
     let descriptionLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .systemGray6
+        label.textAlignment = .center
+        label.backgroundColor = .white
         return label
     }()
     
@@ -36,14 +41,15 @@ class PhysicsCell: BaseCell {
     
     override func setupViews() {
         super.setupViews()
-        addSubview(chartView)
-        addSubview(separatorView)
+        addSubview(valueLabel)
         addSubview(descriptionLabel)
+        addSubview(separatorView)
         
-        addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: chartView)
-        addConstraintsWithFormat(format: "H:|-16-[v0(40)]-16-|", views: descriptionLabel)
-        addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(40)]-[v2(1)]|", views: chartView, descriptionLabel, separatorView)
+        addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: valueLabel)
+        addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: descriptionLabel)
         addConstraintsWithFormat(format: "H:|[v0]|", views: separatorView)
+        
+        addConstraintsWithFormat(format: "V:|-16-[v0]-[v1(==v0)]-[v2(1)]|", views: descriptionLabel, valueLabel, separatorView)
         
         
     }

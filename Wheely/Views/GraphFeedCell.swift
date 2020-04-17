@@ -10,7 +10,7 @@ import UIKit
 
 class GraphFeedCell: FeedCell {
     
-    let graphFeedCellIds = ["tacxId", "gpsId", "accelerometerId", "heartRateId"]
+    let graphFeedCellIds = ["tacxId", "gpsVelocityId", "gpsAltitudeId", "accelerometerId", "pushRateId", "heartRateId"]
     
     
     override func setupViews() {
@@ -23,6 +23,8 @@ class GraphFeedCell: FeedCell {
         collectionView.register(SensorCell.self, forCellWithReuseIdentifier: graphFeedCellIds[1])
         collectionView.register(SensorCell.self, forCellWithReuseIdentifier: graphFeedCellIds[2])
         collectionView.register(SensorCell.self, forCellWithReuseIdentifier: graphFeedCellIds[3])
+        collectionView.register(SensorCell.self, forCellWithReuseIdentifier: graphFeedCellIds[4])
+        collectionView.register(SensorCell.self, forCellWithReuseIdentifier: graphFeedCellIds[5])
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

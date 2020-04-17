@@ -8,17 +8,16 @@
 
 import UIKit
 
-class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+protocol ProfileControllerDelegate: class {
+    func hasSavedData(weight: Int, age: Int)
+    func alert(field: String)
+}
+
+class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITextFieldDelegate, ProfileControllerDelegate {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.addSubview(collectionView)
-        registerCells()
-    }
+    var database: Database?
     
-    func registerCells() {
-        collectionView.register(<#T##cellClass: AnyClass?##AnyClass?#>, forCellWithReuseIdentifier: <#T##String#>)
-    }
+    let profileCellId = "profileCellId"
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -31,13 +30,28 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return collectionView
     }()
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(collectionView)
+        
+        collectionView.anchorToTop(view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        registerCells()
+    }
+    
+    func registerCells() {
+        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: profileCellId)
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: profileCellId, for: indexPath) as! ProfileCell
+        cell.delegate = self
+        cell.ageView.delegate = self
+        cell.weightView.delegate = self
         return cell
     }
     
@@ -45,6 +59,45 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return CGSize(width: view.frame.width, height: view.frame.height)
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.text = ""
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = (textField.text as! NSString).replacingCharacters(in: range, with: string)
+        
+        if(text.count == 0) {return true}
+
+        if Int(text) != nil {
+            // Text field converted to an Int
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func hasSavedData(weight: Int, age: Int) {
+        
+        
+        let objects = database!.getAllData(entity: "Profile", type: "profile")
+        if objects.count >= 1 {
+            database!.deleteAllDataFromEntity(entity: "Profile")
+            database!.saveData(age: age, weight: weight, entity: "Profile")
+        } else {
+            database!.saveData(age: age, weight: weight, entity: "Profile")
+        }
+        dismiss(animated: true, completion: nil)
+        
+    }
+    
+    func alert(field: String) {
+        let alert = UIAlertController(title: "Oops!", message: field + " needs to be filled in.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
 }

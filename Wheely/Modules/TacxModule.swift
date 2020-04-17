@@ -167,6 +167,7 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         }
         
         
+    
         self.currentTime = Int(timeCounter)
         
         
@@ -198,6 +199,7 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var currentVelocity = Double(1)
     var previousVelocity = Double(0)
     let wheelDiameter = Double(0.6096) // 24 inches in metres.
+    var currentDistance = Double()
     var BLEDate = Date()
     
     
@@ -209,16 +211,14 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         
         previousVelocity = currentVelocity
         currentVelocity = ((wheelCircumference * doubleDifferenceInRotations)/((doubleTimeSinceLastRevolution) / 1000)) // m/s
+       
+        currentDistance = Double(self.currentAmountOfRevolutions)*wheelCircumference
         
-        if(currentVelocity != nil && currentVelocity > 0 && currentVelocity.isNaN != true) {
-            database!.saveData(velocityNumber: self.currentVelocity, timeDate: self.BLEDate, entity: "Tacx")
-            
+        if(currentVelocity != nil && currentVelocity > 0 && currentVelocity.isNaN != true && currentDistance.isNaN != true) {
+            database!.saveData(velocityNumber: self.currentVelocity, distance: self.currentDistance, altitude: 0.0, timeDate: self.BLEDate, entityName: "Tacx")
         }
         
-        
         self.BLEDate = self.getCurrentTimeBLE()
-        
-        
     }
     
     func decodePeripheralState(peripheralState: CBPeripheralState) {

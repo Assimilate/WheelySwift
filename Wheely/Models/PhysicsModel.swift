@@ -11,4 +11,5 @@ import UIKit
 class PhysicsModel: NSObject {
     var view: UIView?
     var title: String?
+    var distance: Double?
 }

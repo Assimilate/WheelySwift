@@ -27,18 +27,46 @@ class Database {
     }
     
     
-    func saveData(velocityNumber: Double, timeDate: Date, entity: String) {
+    func saveData(velocityNumber: Double, distance: Double, altitude: Double, timeDate: Date, entityName: String) {
         
         
         
         let managedContext = self.appDelegate!.persistentContainer.viewContext
         
-        let entity = NSEntityDescription.entity(forEntityName: entity, in: managedContext)!
+        let entity = NSEntityDescription.entity(forEntityName: entityName, in: managedContext)!
         
         let object = NSManagedObject(entity: entity, insertInto: managedContext)
         
         object.setValue(velocityNumber, forKeyPath: "velocity")
         object.setValue(timeDate, forKeyPath: "time")
+        object.setValue(distance, forKey: "distance")
+        if(entityName == "GPS") {
+            object.setValue(altitude, forKey: "altitude")
+        }
+        
+        do {
+            try managedContext.save()
+            
+        } catch let error as NSError{
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        
+    }
+    
+    // Save push count data to entity.
+    
+    func saveData(pushCount: Double, timeDate: Date, entityName: String) {
+        
+        print("Push count saved: \(pushCount)")
+        
+        let managedContext = self.appDelegate!.persistentContainer.viewContext
+        
+        let entity = NSEntityDescription.entity(forEntityName: entityName, in: managedContext)!
+        
+        let object = NSManagedObject(entity: entity, insertInto: managedContext)
+        
+        object.setValue(pushCount, forKeyPath: "pushCount")
+        object.setValue(timeDate, forKey: "time")
         
         do {
             try managedContext.save()
@@ -119,6 +147,26 @@ class Database {
         }
     }
     
+    func saveData(age: Int, weight: Int, entity: String) {
+        
+        
+        let managedContext = self.appDelegate!.persistentContainer.viewContext
+        
+        let entity = NSEntityDescription.entity(forEntityName: entity, in: managedContext)!
+        
+        let object = NSManagedObject(entity: entity, insertInto: managedContext)
+        
+        object.setValue(weight, forKeyPath: "weight")
+        object.setValue(age, forKeyPath: "age")
+        
+        do {
+            try managedContext.save()
+            
+        } catch let error as NSError{
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+    
     func deleteAllDataFromEntity(entity: String ) {
         
         
@@ -153,6 +201,7 @@ class Database {
             let isEqualAcceleration = (type == "acceleration")
             let isEqualVelocity = (type == "velocity")
             let isEqualHeartRate = (type == "heartRate")
+            let isEqualPushRate = (type == "pushRate")
             
             if(isEqualVelocity) {
                 let velocities = try managedContext.fetch(readRequest)
@@ -163,6 +212,10 @@ class Database {
             } else if(isEqualHeartRate) {
                 let heartRates = try managedContext.fetch(readRequest)
                 objectDataToReturn = heartRates
+            } else if(isEqualPushRate) {
+                let pushRates = try managedContext.fetch(readRequest)
+                objectDataToReturn = pushRates
+                print("Returning data: \(pushRates)")
             }
             
         } catch let error as NSError {
@@ -181,8 +234,10 @@ class Database {
         }
         
         let readRequest: NSFetchRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
-        let sort: NSSortDescriptor = NSSortDescriptor(key: key, ascending: true)
-        readRequest.sortDescriptors = [sort]
+        if(entity != "Profile") {
+            let sort: NSSortDescriptor = NSSortDescriptor(key: key, ascending: true)
+            readRequest.sortDescriptors = [sort]
+        }
         var objectDataToReturn: [NSManagedObject] = [NSManagedObject]()
         managedContext.performAndWait {
             
@@ -192,6 +247,7 @@ class Database {
                 let isEqualVelocity = (type == "velocity")
                 let isEqualHeartRate = (type == "heartRate")
                 let isEqualSession = (type == "session")
+                let isEqualProfile = (type == "profile")
                 
                 if(isEqualVelocity) {
                     let velocities = try managedContext.fetch(readRequest)
@@ -205,6 +261,9 @@ class Database {
                 } else if(isEqualSession) {
                     let sessions: [NSManagedObject] = try managedContext.fetch(readRequest) as! [Session]
                     objectDataToReturn = sessions
+                } else if(isEqualProfile) {
+                    let profiles: [NSManagedObject] = try managedContext.fetch(readRequest)
+                    objectDataToReturn = profiles
                 }
                 
             } catch let error as NSError {

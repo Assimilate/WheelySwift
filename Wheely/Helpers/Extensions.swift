@@ -101,3 +101,7 @@ extension UserDefaults {
     }
 }
 
+extension LosslessStringConvertible {
+    var string: String { .init(self) }
+}
+

@@ -11,7 +11,7 @@ import UIKit
 class EnergyFeedCell: FeedCell {
     
     
-    let energyFeedCellIds = ["energyExpenditureId"]
+    let energyFeedCellIds = ["energyExpenditureTacxId", "energyExpenditureGPSId"]
     
     
     override func setupViews() {
@@ -22,6 +22,7 @@ class EnergyFeedCell: FeedCell {
         addConstraintsWithFormat(format: "V:|[v0]|", views: collectionView)
 
         collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[0])
+        collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[1])
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -34,5 +35,9 @@ class EnergyFeedCell: FeedCell {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return physicsModels.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: frame.width, height: 102)
     }
 }

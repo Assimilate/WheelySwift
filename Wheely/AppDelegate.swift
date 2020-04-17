@@ -60,6 +60,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
               return
             }
         })
+        
+        self.healthStore.enableBackgroundDelivery(
+            for: HKQuantityType.quantityType(forIdentifier: .pushCount)!,
+          frequency: .immediate,
+          withCompletion: { succeeded, error in
+            guard error != nil && succeeded else {
+              return
+            }
+        })
 
     }
 

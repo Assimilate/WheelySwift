@@ -48,6 +48,18 @@ class HeartRateModule: NSObject, WCSessionDelegate {
                 }
             }
         }
+        print("Attempting to resolve message.")
+        if let messageReceivedPushCount = message["PushCount"] as? Dictionary<Date,Double> {
+            print("Dict message received")
+            DispatchQueue.main.async {
+                if(messageReceivedPushCount.count > 0) {
+                    for(date, pushes) in messageReceivedPushCount {
+                        print("Received: \(date) and \(pushes)")
+                        self.database!.saveData(pushCount: pushes, timeDate: date, entityName: "PushCount")
+                    }
+                }
+            }
+        }
     }
     var heartRateDateSecond = Date()
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
@@ -58,6 +70,18 @@ class HeartRateModule: NSObject, WCSessionDelegate {
             DispatchQueue.main.async{
                 if(messageReceivedHeartRate.isNaN != true) {
                     self.database!.saveData(heartRate: messageReceivedHeartRate, timeDate: self.heartRateDateSecond, entity: "HeartRate")
+                }
+            }
+        }
+        print("Attempting to resolve message.")
+        if let messageReceivedPushCount = message["PushCount"] as? Dictionary<Date,Double> {
+            print("Dict message received")
+            DispatchQueue.main.async {
+                if(messageReceivedPushCount.count > 0) {
+                    for(date, pushes) in messageReceivedPushCount {
+                        print("Received: \(date) and \(pushes)")
+                        self.database!.saveData(pushCount: pushes, timeDate: date, entityName: "PushCount")
+                    }
                 }
             }
         }
@@ -76,8 +100,8 @@ class HeartRateModule: NSObject, WCSessionDelegate {
         activateCollectionInWatch()
     }
     
-    func stopWatchSession() {
-        deactivateCollectionInWatch()
+    func stopWatchSession(endDate: Date) {
+        deactivateCollectionInWatch(endDate: endDate)
         updateController()
     }
     
@@ -96,11 +120,12 @@ class HeartRateModule: NSObject, WCSessionDelegate {
             let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate)
             let pushCount = HKObjectType.quantityType(forIdentifier: .pushCount)
             let wheelchairDistance = HKObjectType.quantityType(forIdentifier: .distanceWheelchair)
+            let workout = HKObjectType.workoutType()
             
             // Prepare a list of the data types to read/write from the health store.
             
-            let sampleTypesToWrite: Set<HKSampleType> = [heartRate!, pushCount!, wheelchairDistance!]
-            let sampleTypesToRead: Set<HKObjectType> = [heartRate!, pushCount!, wheelchairDistance!]
+            let sampleTypesToWrite: Set<HKSampleType> = [heartRate!, pushCount!, wheelchairDistance!, workout]
+            let sampleTypesToRead: Set<HKObjectType> = [heartRate!, pushCount!, wheelchairDistance!, workout]
             
             
             // Authorize the app to collect health data.
@@ -133,7 +158,8 @@ class HeartRateModule: NSObject, WCSessionDelegate {
         }
     }
     
-    func deactivateCollectionInWatch() {
+    func deactivateCollectionInWatch(endDate: Date) {
+        
         DispatchQueue.main.async {
             let message = ["activate" : false]
             
@@ -142,6 +168,8 @@ class HeartRateModule: NSObject, WCSessionDelegate {
             })
         }
     }
+    
+    
     
     //--> Getting the current date. Individual functions for BLE, GPS, Heart-rate and Accelerometer. This is to make it thread safe and so that no function accesses this function at the same time.
     
