@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ProfileControllerDelegate: class {
-    func hasSavedData(weight: Int, age: Int)
+    func hasSavedData(weight: Int, age: Int, wheelchairWeight: Int)
     func alert(field: String)
 }
 
@@ -52,6 +52,7 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         cell.delegate = self
         cell.ageView.delegate = self
         cell.weightView.delegate = self
+        cell.wheelchairWeightView.delegate = self
         return cell
     }
     
@@ -80,16 +81,17 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         }
     }
     
-    func hasSavedData(weight: Int, age: Int) {
+    func hasSavedData(weight: Int, age: Int, wheelchairWeight: Int) {
         
         
         let objects = database!.getAllData(entity: "Profile", type: "profile")
         if objects.count >= 1 {
             database!.deleteAllDataFromEntity(entity: "Profile")
-            database!.saveData(age: age, weight: weight, entity: "Profile")
+            database!.saveData(age: age, weight: weight, wheelchairWeight: wheelchairWeight, date: Date(), entity: "Profile")
         } else {
-            database!.saveData(age: age, weight: weight, entity: "Profile")
+            database!.saveData(age: age, weight: weight, wheelchairWeight: wheelchairWeight, date: Date(), entity: "Profile")
         }
+        UserDefaults.standard.setProfile(value: true)
         dismiss(animated: true, completion: nil)
         
     }

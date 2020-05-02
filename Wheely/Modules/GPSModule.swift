@@ -16,6 +16,8 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
     var viewController: HomeController?
     var database: Database?
     
+    var ready = false
+    
     init(viewController: HomeController, database: Database) {
         self.viewController = viewController
         self.database = database
@@ -52,7 +54,6 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         if let location = locations.last {
             self.currentTimeGPS = self.getCurrentTimeGPS()
             DispatchQueue.main.async {
-                //print("New location is \(location)")
                 
                 self.deriveGPSDistance(latitudeFrom: self.locationPrevious.coordinate.latitude, longitudeFrom: self.locationPrevious.coordinate.longitude, latitudeTo: location.coordinate.latitude, longitudeTo: location.coordinate.longitude)
                 self.currentAltitude = location.altitude
@@ -60,7 +61,10 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
                 
                 self.locationPrevious = location
             }
-            
+            if(!ready) {
+                self.viewController?.connectionReady(moduleName: "GPS", ready: true)
+                ready = true
+            }
             
         }
     }
@@ -71,11 +75,6 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
     func deriveGPSDistance(latitudeFrom: Double, longitudeFrom: Double, latitudeTo: Double, longitudeTo: Double) {
         let coordinateFrom = CLLocation(latitude: latitudeFrom, longitude: longitudeFrom)
         let coordinateTo = CLLocation(latitude: latitudeTo, longitude: longitudeTo)
-        
-        //        print("LatFrom: \(latitudeFrom)")
-        //        print("LongFrom: \(longitudeFrom)")
-        //        print("LatTo: \(latitudeTo)")
-        //        print("LongTo: \(longitudeTo)")
         
         distanceInMetres = coordinateTo.distance(from: coordinateFrom)
         if(distanceInMetres < 1000) {
@@ -98,7 +97,7 @@ class GPSModule: NSObject, CLLocationManagerDelegate{
         DispatchQueue.main.async {
             if(self.currentVelocityGPS < 100) { // In case insane values pop in.
                 if(self.currentVelocityGPS.isNaN != true && self.currentVelocityGPS.isNaN != true) {
-                    self.database!.saveData(velocityNumber: self.currentVelocityGPS, distance: self.totalDistance, altitude: self.currentAltitude, timeDate: self.currentTimeGPS, entityName: "GPS")
+                    self.database!.saveData(velocityNumber: self.currentVelocityGPS, distance: self.distanceInMetres, altitude: self.currentAltitude, timeDate: self.currentTimeGPS, entityName: "GPS")
                 }
             }
             

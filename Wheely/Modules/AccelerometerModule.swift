@@ -16,6 +16,8 @@ class AccelerometerModule {
     var viewController: HomeController?
     var database: Database?
     
+    var ready = false
+    
     init(viewController: HomeController, database: Database) {
         self.viewController = viewController
         self.database = database
@@ -45,6 +47,11 @@ class AccelerometerModule {
                     }
                     
                 }
+                if(!self.ready) {
+                    self.viewController?.connectionReady(moduleName: "Accelerometer", ready: true)
+                    self.ready = true
+                }
+                
             }
             
         }

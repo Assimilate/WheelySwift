@@ -127,7 +127,7 @@ class Database {
     
     func saveData(heartRate: Double, timeDate: Date, entity: String) {
         
-        
+        print("Saving heart rate \(heartRate)")
         let managedContext = self.appDelegate!.persistentContainer.viewContext
         
         let entity = NSEntityDescription.entity(forEntityName: entity, in: managedContext)!
@@ -135,7 +135,6 @@ class Database {
         let object = NSManagedObject(entity: entity, insertInto: managedContext)
         
         object.setValue(heartRate, forKeyPath: "heartRate")
-        print("Saving date: \(timeDate)")
         object.setValue(timeDate, forKeyPath: "time")
         
         do {
@@ -147,7 +146,7 @@ class Database {
         }
     }
     
-    func saveData(age: Int, weight: Int, entity: String) {
+    func saveData(age: Int, weight: Int, wheelchairWeight: Int, date: Date, entity: String) {
         
         
         let managedContext = self.appDelegate!.persistentContainer.viewContext
@@ -158,6 +157,28 @@ class Database {
         
         object.setValue(weight, forKeyPath: "weight")
         object.setValue(age, forKeyPath: "age")
+        object.setValue(wheelchairWeight, forKey: "wheelchairWeight")
+        object.setValue(date, forKey: "date")
+        
+        do {
+            try managedContext.save()
+            
+        } catch let error as NSError{
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func saveData(entity: String, energy: Double, alternativeEnergy: Double, startDate: Date, endDate: Date) {
+        let managedContext = self.appDelegate!.persistentContainer.viewContext
+        
+        let entity = NSEntityDescription.entity(forEntityName: entity, in: managedContext)!
+        
+        let object = NSManagedObject(entity: entity, insertInto: managedContext)
+        
+        object.setValue(energy, forKey: "energyExpenditure")
+        object.setValue(alternativeEnergy, forKey: "alternativeEnergyExpenditure")
+        object.setValue(startDate, forKey: "startTime")
+        object.setValue(endDate, forKey: "endTime")
         
         do {
             try managedContext.save()
@@ -186,37 +207,20 @@ class Database {
         }
     }
     
-    func readDataBetweenDates(entity: String, type: String, startDate: NSDate, endDate: NSDate) -> [NSManagedObject] {
+    func readDataBetweenDates(entity: String, startDate: NSDate, endDate: NSDate, sortDescriptorKey: String) -> [NSManagedObject] {
         
         
         let managedContext = self.appDelegate!.persistentContainer.viewContext
         
         let readRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
-        let sort = NSSortDescriptor(key: "time", ascending: true)
+        let sort = NSSortDescriptor(key: sortDescriptorKey, ascending: true)
         readRequest.sortDescriptors = [sort]
-        readRequest.predicate = NSPredicate(format: "(time >= %@) AND (time <= %@)", startDate, endDate)
+        readRequest.predicate = NSPredicate(format: "(\(sortDescriptorKey) >= %@) AND (\(sortDescriptorKey) <= %@)", startDate, endDate)
         var objectDataToReturn = [NSManagedObject]()
         do {
             
-            let isEqualAcceleration = (type == "acceleration")
-            let isEqualVelocity = (type == "velocity")
-            let isEqualHeartRate = (type == "heartRate")
-            let isEqualPushRate = (type == "pushRate")
+            objectDataToReturn = try managedContext.fetch(readRequest)
             
-            if(isEqualVelocity) {
-                let velocities = try managedContext.fetch(readRequest)
-                objectDataToReturn = velocities
-            } else if(isEqualAcceleration) {
-                let accelerations = try managedContext.fetch(readRequest)
-                objectDataToReturn = accelerations
-            } else if(isEqualHeartRate) {
-                let heartRates = try managedContext.fetch(readRequest)
-                objectDataToReturn = heartRates
-            } else if(isEqualPushRate) {
-                let pushRates = try managedContext.fetch(readRequest)
-                objectDataToReturn = pushRates
-                print("Returning data: \(pushRates)")
-            }
             
         } catch let error as NSError {
             print("Could not read. \(error), \(error.userInfo)")

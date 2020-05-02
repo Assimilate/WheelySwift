@@ -24,7 +24,7 @@ class DateFeedCell: FeedCell {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("Updating date feed cells")
+
         let id = self.dateFeedCellIds[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath) as! DateCell
         cell.date = self.dateModels[indexPath.item]

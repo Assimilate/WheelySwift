@@ -45,6 +45,7 @@ class AppleWatchModule: NSObject, WCSessionDelegate {
             self.heartRateDateSecond = (messageReceivedDate as? Date)!
         }
         if let messageReceivedHeartRate = message["HeartRateBPM"] as? Double {
+            print("Message received \(messageReceivedHeartRate)")
             let dateReceived = Date()
             DispatchQueue.main.async{
                 if(messageReceivedHeartRate.isNaN != true) {

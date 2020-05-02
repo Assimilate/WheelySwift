@@ -33,7 +33,6 @@ class SensorCell: BaseCell {
     
     var sensor: SensorModel? {
         didSet {
-            print("Did set sensor model")
             self.descriptionLabel.text = self.sensor?.title
             self.chartView.data = self.sensor?.data
             self.chartView.chartDescription?.text = self.sensor?.title
@@ -63,8 +62,6 @@ class SensorCell: BaseCell {
     
     override func setupViews() {
         super.setupViews()
-        
-        print("Graph setup...")
         
         addSubview(chartView)
         addSubview(separatorView)

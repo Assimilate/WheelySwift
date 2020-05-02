@@ -28,7 +28,7 @@ class GraphFeedCell: FeedCell {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("Updating sensor feed cell")
+
         let id = graphFeedCellIds[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath) as! SensorCell
         cell.sensor = sensorModels[indexPath.item]

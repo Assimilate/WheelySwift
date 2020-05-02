@@ -12,7 +12,7 @@ class PhysicsCell: BaseCell {
     
     var energy: PhysicsModel? {
         didSet {
-            valueLabel.text = energy?.distance?.string
+            valueLabel.text = energy?.value?.string
             descriptionLabel.text = energy?.title
             self.reloadInputViews()
         }

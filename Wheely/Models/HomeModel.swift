@@ -10,4 +10,5 @@ import UIKit
 
 class HomeModel: NSObject {
     var title: String?
+    var ready: Bool?
 }

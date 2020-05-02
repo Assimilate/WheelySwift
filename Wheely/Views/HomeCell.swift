@@ -13,6 +13,7 @@ class HomeCell: BaseCell {
     var shapeLayer = CAShapeLayer()
     var trackLayer = CAShapeLayer()
     var pulsatingLayer = CAShapeLayer()
+    var nrOfReadyConnections = Int(0)
     
     var running = false
     
@@ -20,14 +21,20 @@ class HomeCell: BaseCell {
         let label = UILabel()
         label.text = "Start"
         label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 32)
+        label.font = UIFont.boldSystemFont(ofSize: 24)
         
         return label
     }()
     
     var home: HomeModel? {
         didSet {
+            if(home?.ready == true) {
+                changeColorToReadyGreen()
+            } else {
+                changeColorToNotReadyRed()
+            }
             
+            reloadInputViews()
         }
     }
     
@@ -138,16 +145,15 @@ class HomeCell: BaseCell {
         basicAnimation.isRemovedOnCompletion = false
         
         CATransaction.setCompletionBlock {
-            print("Completed...")
             
             if(self.running) {
                 self.running = false
                 self.homeController?.endSession()
-                self.progressLabel.text = "Ended"
+                self.progressLabel.text = "Start"
             } else {
                 self.running = true
                 self.homeController?.startSession()
-                self.progressLabel.text = "Started"
+                self.progressLabel.text = "Connecting"
             }
 
         }
@@ -155,8 +161,26 @@ class HomeCell: BaseCell {
         shapeLayer.add(basicAnimation, forKey: "hello")
         CATransaction.commit()
     }
+
+    func changeColorToReadyGreen() {
+        shapeLayer.strokeColor = UIColor.rgb(red: 0, green: 255, blue: 0).cgColor
+        self.progressLabel.text = "Running"
+    }
+    
+    func changeColorToNotReadyRed() {
+        shapeLayer.strokeColor = UIColor.rgb(red: 204, green: 0, blue: 0).cgColor
+    }
     
     @objc private func handleTapStart() {
-        animateCircle()
+        if(hasEnteredProfile()) {
+            animateCircle()
+        } else {
+            self.homeController?.showUserProfile()
+        }
     }
+    
+    fileprivate func hasEnteredProfile() -> Bool {
+        return UserDefaults.standard.hasEnteredProfile()
+    }
+    
 }

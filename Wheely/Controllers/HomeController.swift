@@ -14,7 +14,7 @@ import Charts
 import MessageUI
 
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, MFMailComposeViewControllerDelegate {
-        
+    
     
     //-> Variables and functions relating to UI components.
     
@@ -40,7 +40,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var gpsModule: GPSModule? = nil
     var accelerometerModule: AccelerometerModule? = nil
     var tacxModule: TacxModule? = nil
-    var heartRateModule: HeartRateModule? = nil
+    var heartRateModule: AppleWatchModule? = nil
+    var physicsModule: PhysicsModule? = nil
     
     // Declaring the model class variables.
     
@@ -58,6 +59,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     // Models in energy feed
     var physicsModelTacx: PhysicsModel? = nil
     var physicsModelGPS: PhysicsModel? = nil
+    var physicsModelEnergy: PhysicsModel? = nil
+    var physicsModelActiveEnergy: PhysicsModel? = nil
+    var physicsModelEnergyAlternative: PhysicsModel? = nil
     
     // Models in date feed
     var dateModel: DateModel? = nil
@@ -80,15 +84,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         // Initialize the classes.
         
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        
-        database = Database(appDelegate: appDelegate)
-        tacxModule = TacxModule(viewController: self, database: database!)
-        gpsModule = GPSModule(viewController: self, database: database!)
-        accelerometerModule = AccelerometerModule(viewController: self, database: database!)
-        heartRateModule = HeartRateModule(viewController: self, database: database!)
+        setupModules()
         
         setupMenuBar()
         setupNavBarButtons()
@@ -116,6 +112,19 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var physicsModels = [PhysicsModel]()
     var dateModels = [DateModel]()
     
+    private func setupModules() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        database = Database(appDelegate: appDelegate)
+        tacxModule = TacxModule(viewController: self, database: database!)
+        gpsModule = GPSModule(viewController: self, database: database!)
+        accelerometerModule = AccelerometerModule(viewController: self, database: database!)
+        heartRateModule = AppleWatchModule(viewController: self, database: database!)
+        physicsModule = PhysicsModule(database: database!)
+    }
+    
     private func setupModels() {
         
         homeModel = HomeModel()
@@ -137,8 +146,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         physicsModelTacx = PhysicsModel()
         physicsModelGPS = PhysicsModel()
+        physicsModelEnergy = PhysicsModel()
+        physicsModelActiveEnergy = PhysicsModel()
+        physicsModelEnergyAlternative = PhysicsModel()
         physicsModels.append(physicsModelTacx!)
         physicsModels.append(physicsModelGPS!)
+//      physicsModels.append(physicsModelEnergy!)
+        physicsModels.append(physicsModelActiveEnergy!)
+        physicsModels.append(physicsModelEnergyAlternative!)
         
         dateModel = DateModel()
         dateModels.append(dateModel!)
@@ -162,6 +177,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         collectionView?.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        collectionView?.showsVerticalScrollIndicator = false
+        collectionView?.showsHorizontalScrollIndicator = false
     }
     
     
@@ -254,8 +271,6 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func getTotalSecondsFromDate(seconds: Int, minutes: Int, hours: Int) -> Double {
         
-        print("Seconds: \(seconds) Minutes: \(minutes) Hours: \(hours)")
-        
         let totalSeconds = (seconds) + (minutes * 60) + (hours * 3600)
         return Double(totalSeconds)
     }
@@ -297,22 +312,29 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func startSession() {
         print("Session started")
         startDate = Date()
-        print(startDate)
-        tacxModule?.startBLE()
-        gpsModule?.startGPS()
-        accelerometerModule?.startAccelerometer()
-        heartRateModule?.startWatchSession()
+        DispatchQueue.main.async {
+            //self.setupModules()
+            
+            self.tacxModule?.startBLE()
+            self.gpsModule?.startGPS()
+            self.accelerometerModule?.startAccelerometer()
+            self.heartRateModule?.startWatchSession()
+        }
+        
     }
     
     func endSession() {
         print("Session ended")
         endDate = Date()
-        print(endDate)
         tacxModule?.stopBLE()
         gpsModule?.stopGPS()
         accelerometerModule?.stopAccelerometer()
         heartRateModule?.stopWatchSession(endDate: self.endDate)
         saveSessionToDatabase()
+        physicsModule?.calculateEnergyExpenditure(startDate: startDate, endDate: endDate)
+        DispatchQueue.main.async {
+            self.connectionNotReady()
+        }
         
     }
     
@@ -323,7 +345,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         accelerometerModule?.deleteAccelerometerData()
         heartRateModule?.deleteHeartRateData()
         database!.deleteAllDataFromEntity(entity: "Session")
-        
+        scrollToMenuIndex(menuIndex: 0)
     }
     
     func saveSessionToDatabase() {
@@ -352,39 +374,42 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func makeSensorModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int, key: String) -> SensorModel {
         let model = SensorModel()
         
-        if(entity == "PushCount") {
-            print("sDate: \(startDate) eDate: \(endDate)")
+        let newData = database!.readDataBetweenDates(entity: entity, startDate: startDate as NSDate, endDate: endDate as NSDate, sortDescriptorKey: "time")
+        
+        var lineOne: LineChartDataSet?
+        
+        if(newData.count == 0) {
+            var entries = [ChartDataEntry]()
+            let value = ChartDataEntry(x: 0, y: 0)
+            entries.append(value)
+            lineOne = LineChartDataSet(entries: entries, label: modelNames[indexOfModule])
+        } else {
+            lineOne = LineChartDataSet(entries: makeLineChartEntry(data: newData, key: key), label: modelNames[indexOfModule])
         }
         
-        let newData = database!.readDataBetweenDates(entity: entity, type: type, startDate: startDate as NSDate, endDate: endDate as NSDate)
-        
-        if(entity == "PushCount") {
-            print("New data received: \(newData)")
-        }
-        
-        let lineOne = LineChartDataSet(entries: makeLineChartEntry(data: newData, key: key), label: modelNames[indexOfModule])
-        lineOne.colors = [NSUIColor.blue]
+        lineOne!.colors = [NSUIColor.blue]
         
         let data = LineChartData()
         data.addDataSet(lineOne)
         
         model.data = data
-        model.title = modelNames[indexOfModule] + " : " + key
+        model.title = modelNames[indexOfModule] + " - " + type
         
         return model
     }
     
-    func makePhysicsModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int, key: String, title: String) -> PhysicsModel {
+    func makePhysicsModelFromDatabase(entity: String, type: String, startDate: Date, endDate: Date, indexOfModule: Int, key: String, sortDescriptorKey: String, title: String) -> PhysicsModel {
         let model = PhysicsModel()
         
-        let data = database!.readDataBetweenDates(entity: entity, type: type, startDate: startDate as NSDate, endDate: endDate as NSDate)
-        var totalDistance = Double()
+        let data = database!.readDataBetweenDates(entity: entity, startDate: startDate as NSDate, endDate: endDate as NSDate, sortDescriptorKey: sortDescriptorKey)
         
+        var totalValue = Double()
+
         for object in data {
-            let distance = object.value(forKey: key) as! Double
-            totalDistance = distance
+            let value = object.value(forKey: key) as! Double
+            totalValue += value
         }
-        model.distance = totalDistance
+        model.value = totalValue
         model.title = title
         return model
     }
@@ -410,12 +435,12 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.dateModels.removeAll()
             self.dateModels.append(dateModel)
             
-            let tacxModelVelocity = self.makeSensorModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "velocity")
-            let gpsModelVelocity = self.makeSensorModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "velocity")
-            let gpsModelAltitude = self.makeSensorModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "altitude")
-            let accelerometerModel = self.makeSensorModelFromDatabase(entity: "Accelerometer", type: "acceleration", startDate: startDate, endDate: endDate, indexOfModule: 2, key: "accelerationY")
-            let pushRateModel = self.makeSensorModelFromDatabase(entity: "PushCount", type: "pushRate", startDate: startDate, endDate: endDate, indexOfModule: 3, key: "pushCount")
-            let heartRateModel = self.makeSensorModelFromDatabase(entity: "HeartRate", type: "heartRate", startDate: startDate, endDate: endDate, indexOfModule: 4, key: "heartRate")
+            let tacxModelVelocity = self.makeSensorModelFromDatabase(entity: "Tacx", type: "Velocity vs Time", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "velocity")
+            let gpsModelVelocity = self.makeSensorModelFromDatabase(entity: "GPS", type: "Velocity vs Time", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "velocity")
+            let gpsModelAltitude = self.makeSensorModelFromDatabase(entity: "GPS", type: "Altitude vs Time", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "altitude")
+            let accelerometerModel = self.makeSensorModelFromDatabase(entity: "Accelerometer", type: "Acceleration vs Time", startDate: startDate, endDate: endDate, indexOfModule: 2, key: "accelerationY")
+            let pushRateModel = self.makeSensorModelFromDatabase(entity: "PushCount", type: "Pushes vs Time", startDate: startDate, endDate: endDate, indexOfModule: 3, key: "pushCount")
+            let heartRateModel = self.makeSensorModelFromDatabase(entity: "HeartRate", type: "BPM vs Time", startDate: startDate, endDate: endDate, indexOfModule: 4, key: "heartRate")
             
             self.sensorModels.removeAll()
             self.sensorModels.append(tacxModelVelocity)
@@ -425,44 +450,36 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.sensorModels.append(pushRateModel)
             self.sensorModels.append(heartRateModel)
             
-            let physicsModelTacx = self.makePhysicsModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "distance", title: "Tacx distance travelled")
-            let physicsModelGPS = self.makePhysicsModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "distance", title: "GPS distance travelled")
+            let physicsModelTacx = self.makePhysicsModelFromDatabase(entity: "Tacx", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 0, key: "distance", sortDescriptorKey: "time", title: "Tacx distance travelled")
+            let physicsModelGPS = self.makePhysicsModelFromDatabase(entity: "GPS", type: "velocity", startDate: startDate, endDate: endDate, indexOfModule: 1, key: "distance", sortDescriptorKey: "time", title: "GPS distance travelled")
+//            let physicsModelEnergy = self.makePhysicsModelFromDatabase(entity: "Energy", type: "energyExpenditure", startDate: startDate, endDate: endDate, indexOfModule: 2, key: "energyExpenditure", sortDescriptorKey: "startTime", title: "Tacx energy Expenditure")
+            let physicsModelActiveEnergy = self.makePhysicsModelFromDatabase(entity: "ActiveEnergy", type: "energyExpenditure", startDate: startDate, endDate: endDate, indexOfModule: 3, key: "energyExpenditure", sortDescriptorKey: "startTime", title: "Apple Energy Expenditure")
+            let physicsModelAlternativeEnergy = self.makePhysicsModelFromDatabase(entity: "Energy", type: "alternativeEnergyExpenditure", startDate: startDate, endDate: endDate, indexOfModule: 3, key: "alternativeEnergyExpenditure", sortDescriptorKey: "startTime", title: "Tacx Energy Expenditure")
             
             self.physicsModels.removeAll()
             self.physicsModels.append(physicsModelTacx)
             self.physicsModels.append(physicsModelGPS)
-            
-            
+//          self.physicsModels.append(physicsModelEnergy)
+            self.physicsModels.append(physicsModelActiveEnergy)
+            self.physicsModels.append(physicsModelAlternativeEnergy)
+
         }
     }
     
-    func exportAllData() {
-        let exportDataTacx = createExportString(entity: "Tacx", type: "velocity",key: "velocity")
-        let exportDataGPS = createExportString(entity: "GPS", type: "velocity", key: "velocity")
-        let exportDataAccelerometer = createExportString(entity: "Accelerometer", type: "acceleration", key: "accelerationY")
-        let exportDataHeartRate = createExportString(entity: "HeartRate", type: "heartRate", key: "heartRate")
+    func exportAllData() -> String? {
+//        let exportDataTacx = createExportString(entity: "Tacx", type: "Tacx - Velocity",key: "velocity", sortDescriptorKey: "time")
+//        let exportDataTacxDistance = createExportString(entity: "Tacx", type: "Tacx - Distance covered at time", key: "distance", sortDescriptorKey: "time")
+//        let exportDataGPS = createExportString(entity: "GPS", type: "GPS - Velocity", key: "velocity", sortDescriptorKey: "time")
+//        let exportDataGPSDistance = createExportString(entity: "GPS", type: "GPS - Distance covered at time", key: "distance", sortDescriptorKey: "time")
+//        let exportDataGPSAltitude = createExportString(entity: "GPS", type: "GPS - Altitude", key: "distance", sortDescriptorKey: "time")
+//        let exportDataAccelerometer = createExportString(entity: "Accelerometer", type: "Accelerometer - Acceleration", key: "accelerationY", sortDescriptorKey: "time")
+//        let exportDataHeartRate = createExportString(entity: "HeartRate", type: "Apple Watch - Heart-rate", key: "heartRate", sortDescriptorKey: "time")
+////        let exportDataEnergyExpenditure = createExportString(entity: "Energy", type: "Energy expenditure", key: "energyExpenditure", sortDescriptorKey: "startTime")
+//        let exportDataEnergyExpenditureAlternative = createExportString(entity: "Energy", type: "Energy expenditure alternative", key: "alternativeEnergyExpenditure", sortDescriptorKey: "startTime")
+//        let exportDataEnergyExpenditureApple = createExportString(entity: "ActiveEnergy", type: "Energy expenditure Apple", key: "energyExpenditure", sortDescriptorKey: "startTime")
+//        let exportDataPushCount = createExportString(entity: "PushCount", type: "Push count at time", key: "pushCount", sortDescriptorKey: "time")
         
-        let allExportData = (exportDataTacx! + exportDataGPS! + exportDataAccelerometer! + exportDataHeartRate!) as String
-        let data = allExportData.data(using: .utf8)!
-        
-        let composer = MFMailComposeViewController()
-        composer.setToRecipients(["abelladaniel1@gmail.com"])
-        composer.addAttachmentData(data, mimeType: "text/csv", fileName: "sensorData.csv")
-        composer.mailComposeDelegate = self
-        
-        self.present(composer, animated: true, completion: nil)
-    }
-    
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-    
-    func createExportString(entity: String, type: String, key: String) -> String? {
-        // Each session needs to be handled.
-        let calendar = Calendar.current
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = .current
-        dateFormatter.dateFormat = "yyyy-MM-dd - HH:mm:ss"
+//        let allExportData = (exportDataTacx! + exportDataGPS! + exportDataAccelerometer! + exportDataHeartRate! + exportDataPushCount! + exportDataGPSAltitude! + exportDataTacxDistance! + exportDataGPSDistance! + exportDataEnergyExpenditureAlternative! + exportDataEnergyExpenditureApple!) as String
         
         let sessions = makeSessionModelFromDatabase()
         
@@ -470,39 +487,193 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             return nil
         }
         
+        let composer = MFMailComposeViewController()
+        composer.setToRecipients(["abelladaniel1@gmail.com"])
+        
+       
+            
+        
+        
+        var entityDataArrayForSession = [String]()
+        
+        var entities = ["Tacx", "GPSV", "GPSA", "Accelerometer", "HeartRate", "PushCount"]
+        var key = ["velocity", "velocity", "altitude", "accelerationY", "heartRate", "pushCount"]
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm:ss"
+        
+        var counterSession = 1
+        for session in sessions {
+            entityDataArrayForSession = (createNewExportData(session: session))
+            
+            for i in 0..<entityDataArrayForSession.count {
+                composer.addAttachmentData(entityDataArrayForSession[i].data(using: .utf8)!, mimeType: "text/csv", fileName: entities[i] + dateFormatter.string(from: session.startDate!) + ".csv")
+            }
+            counterSession += 1
+        }
+        
+//        let allExportData = createNewExportData()!
+        
+//        let data = allExportData.data(using: .utf8)!
+        
+        
+        
+        
+//        composer.addAttachmentData(data, mimeType: "text/csv", fileName: "sensorData.csv")
+        composer.mailComposeDelegate = self
+        
+        self.present(composer, animated: true, completion: nil)
+        
+        return "Done"
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    func createNewExportData(session: SessionModel) -> [String] {
+        // Each session needs to be handled.
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = .current
+        dateFormatter.dateFormat = "yyyy-MM-dd - HH:mm:ss"
+        
+        
+        
+        var totalExportContent = ""
+        var csvHeader = "T1, TACXV, T2, GPSV, T3, GPSA, T4, ACC, T5, HR, T6, PR" + "\n"
+        var csvHeaders = ["T1, TACXV", "T2, GPSV", "T3, GPSA", "T4, ACC", "T5, HR", "T6, PR"]
+        var entities = ["Tacx", "GPS", "GPS", "Accelerometer", "HeartRate", "PushCount"]
+        var key = ["velocity", "velocity", "altitude", "accelerationY", "heartRate", "pushCount"]
+        
+        var entityContents = [String]()
+        
+        var entityString = [String]()
+        
+            for i in 0 ..< entities.count {
+                let entityExport = createExportString(entity: entities[i], key: key[i], sortDescriptorKey: "time", session: session)!
+                entityString.append(entityExport)
+            }
+        
+        
+        for i in 0..<entityString.count {
+            entityContents.append(csvHeaders[i] + "\n" + entityString[i])
+        }
+        
+        return entityContents
+    }
+    
+    func createExportString(entity: String, key: String, sortDescriptorKey: String, session: SessionModel) -> String? {
+        // Each session needs to be handled.
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = .current
+        dateFormatter.dateFormat = "yyyy-MM-dd - HH:mm:ss"
+        
         var totalExportContent = ""
         
-        for session in sessions {
             let startDate = session.startDate!
             let endDate = session.endDate!
             
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
             
-            let csvHeader = NSLocalizedString("date, \(type), startDate: \(startDate), endDate: \(endDate), \n", comment: "Session: " + startDateString + "-" + endDateString)
-            
-            let objectsInSession = database!.readDataBetweenDates(entity: entity, type: type, startDate: startDate as NSDate, endDate: endDate as NSDate)
-            
-            print(objectsInSession)
+            let objectsInSession = database!.readDataBetweenDates(entity: entity, startDate: startDate as NSDate, endDate: endDate as NSDate, sortDescriptorKey: sortDescriptorKey)
             
             var value = Double()
             var date = Date()
             
-            var csvContent = ""
+            var startDateValue = Date()
+            var endDateValue = Date()
             
-            for object in objectsInSession {
-                value = object.value(forKey: key) as! Double
-                date = object.value(forKey: "time") as! Date
+            var csvContent = ""
+       
+            if((entity != "Energy") && (entity != "ActiveEnergy")) {
+                var currentDate = Date()
+                var counter = 0
+                var timeAt = 0.0
+                for object in objectsInSession {
+                    
+                    value = object.value(forKey: key) as! Double
+                    date = object.value(forKey: "time") as! Date
+                    if(counter == 0) {
+                        currentDate = date
+                    }
+                    
+                    let timeSinceLastDate = (date.timeIntervalSince(currentDate))
+                    timeAt += timeSinceLastDate
+                    let currentTimeAt = timeAt.string
+                    currentDate = date
+                    let valueString = String(value)
+                    counter += 1
+//                    let dateString = dateFormatter.string(from: date)
+                    
+                    csvContent += currentTimeAt + "," + valueString + "\n"
+                }
+            } else {
                 
-                let valueString = String(value)
-                let dateString = dateFormatter.string(from: date)
-                
-                csvContent += dateString + "," + valueString + "\n"
+                if(entity == "Energy") {
+                    for object in objectsInSession {
+                        value = object.value(forKey: "energyExpenditure") as! Double
+                        let alternativeValue = object.value(forKey: "alternativeEnergyExpenditure") as! Double
+                        startDateValue = object.value(forKey: "startTime") as! Date
+                        endDateValue = object.value(forKey: "endTime") as! Date
+                        let valueString = String(value)
+                        let alternativeValueString = String(alternativeValue)
+                        let dateStringStart = dateFormatter.string(from: startDate)
+                        let dateStringEnd = dateFormatter.string(from: endDate)
+                        
+                        csvContent += valueString + "," + alternativeValueString + "\n"
+                    }
+                } else { // Active energy
+                    for object in objectsInSession {
+                        
+                        value = object.value(forKey: "energyExpenditure") as! Double
+                        startDateValue = object.value(forKey: "startTime") as! Date
+                        endDateValue = object.value(forKey: "endTime") as! Date
+                        let valueString = String(value)
+                        let dateStringStart = dateFormatter.string(from: startDate)
+                        let dateStringEnd = dateFormatter.string(from: endDate)
+                        
+                        csvContent += valueString + "," + dateStringStart + "\n"
+                    }
+                }
+
             }
-            totalExportContent += (csvHeader + csvContent)
-        }
+            
+            totalExportContent = (csvContent)
+        
         return totalExportContent
     }
+    
+    func createSessionBasedString(session: SessionModel, entities: [String], key: [String]) {
+        
+        var objects = [[NSManagedObject]]()
+        
+        let startDate = session.startDate!
+        let endDate = session.endDate!
+        
+        // Import all the objects that need to be evaluated. Tacx, GPS, Acc etc..
+        
+        for i in 0..<entities.count {
+            let object = database!.readDataBetweenDates(entity: entities[i], startDate: startDate as NSDate, endDate: endDate as NSDate, sortDescriptorKey: "time")
+            objects.append(object)
+        }
+        
+        var csvHeaders = ["T1, TACXV", "T2, GPSV", "T3, GPSA", "T4, ACC", "T5, HR"]
+        
+        
+            for i in 0..<csvHeaders.count {
+                
+                
+            }
+        
+        
+        
+        
+    }
+    
+    
     
     func showUserProfile() {
         let profileController = ProfileController()
@@ -510,6 +681,77 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         profileController.modalPresentationStyle = .fullScreen
         present(profileController, animated: true) {
             // Might use later.
+        }
+    }
+    
+    func showTutorial() {
+        let launchController = LaunchController(homeController: self)
+        launchController.modalPresentationStyle = .fullScreen
+        present(launchController, animated: true)
+    }
+    
+    var tacxModuleReady = false
+    var accelerometerModuleReady = false
+    var gpsModuleReady = false
+    var heartRateModuleReady = false
+    
+    func connectionReady(moduleName: String, ready: Bool) {
+        switch(moduleName) {
+        case "Tacx":
+            print("Tacx ready")
+            tacxModuleReady = true
+            break
+        case "Accelerometer":
+            print("Accelerometer ready")
+            accelerometerModuleReady = true
+            break
+        case "GPS":
+            print("GPS ready")
+            gpsModuleReady = true
+            break
+        case "HeartRate":
+            print("HeartRate ready")
+            heartRateModuleReady = true
+            break
+        default:
+            break
+        }
+        
+        if(tacxModuleReady && gpsModuleReady && heartRateModuleReady && accelerometerModuleReady) {
+            let homeModel = homeModels[0]
+            homeModel.ready = true
+            homeModels.removeAll()
+            homeModels.append(homeModel)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                
+            }
+        }
+        
+    }
+    
+    func connectionNotReady() {
+        tacxModuleReady = false
+        tacxModule?.ready = false
+        gpsModuleReady = false
+        gpsModule?.ready = false
+        accelerometerModuleReady = false
+        accelerometerModule?.ready = false
+        heartRateModuleReady = false
+        heartRateModule?.ready = false
+        
+        let homeModel = homeModels[0]
+        homeModel.ready = false
+        homeModels.removeAll()
+        homeModels.append(homeModel)
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    var activeEnergy = 0.0
+    func updateActiveEnergyBurned(activeEnergy: Double) {
+        DispatchQueue.main.async {
+            self.database!.saveData(entity: "ActiveEnergy", energy: activeEnergy, alternativeEnergy: 0.0, startDate: self.startDate, endDate: self.endDate)
         }
     }
 }

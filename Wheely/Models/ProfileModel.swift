@@ -13,4 +13,6 @@ struct ProfileModel {
     let weightTitle: String?
     let age: String?
     let ageTitle: String?
+    let wheelchairWeight: String?
+    let wheelchairWeightTitle: String?
 }

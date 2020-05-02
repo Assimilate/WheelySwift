@@ -6,6 +6,20 @@
         <attribute name="accelerationZ" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
+    <entity name="ActiveEnergy" representedClassName="ActiveEnergy" syncable="YES" codeGenerationType="class">
+        <attribute name="alternativeEnergyExpenditure" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="energyExpenditure" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="Energy" representedClassName="Energy" syncable="YES" codeGenerationType="class">
+        <attribute name="alternativeEnergyExpenditure" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="energyExpenditure" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="totalDistanceGPS" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalDistanceTacx" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="GPS" representedClassName="GPS" syncable="YES" codeGenerationType="class">
         <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="distance" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -18,7 +32,9 @@
     </entity>
     <entity name="Profile" representedClassName="Profile" syncable="YES" codeGenerationType="class">
         <attribute name="age" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="weight" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="wheelchairWeight" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="PushCount" representedClassName="PushCount" syncable="YES" codeGenerationType="class">
         <attribute name="pushCount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -35,9 +51,11 @@
     </entity>
     <elements>
         <element name="Accelerometer" positionX="-54" positionY="0" width="128" height="103"/>
+        <element name="ActiveEnergy" positionX="-54" positionY="36" width="128" height="103"/>
+        <element name="Energy" positionX="-54" positionY="18" width="128" height="133"/>
         <element name="GPS" positionX="-63" positionY="-9" width="128" height="103"/>
         <element name="HeartRate" positionX="-54" positionY="18" width="128" height="73"/>
-        <element name="Profile" positionX="-54" positionY="18" width="128" height="73"/>
+        <element name="Profile" positionX="-54" positionY="18" width="128" height="103"/>
         <element name="PushCount" positionX="-45" positionY="27" width="128" height="73"/>
         <element name="Session" positionX="-54" positionY="18" width="128" height="73"/>
         <element name="Tacx" positionX="-63" positionY="-18" width="128" height="88"/>

@@ -20,7 +20,11 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     
     @IBAction func buttonWatchSend() {
         print("Sampling...")
-        querySingleSample()
+//        let dateReference = Date()
+//        self.startDate = Calendar.current.date(byAdding: .second, value: -5, to: dateReference)
+//        self.endDate = dateReference
+        getActiveEnergy()
+        
     }
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
@@ -29,8 +33,8 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     
     // This function is a delegate function an works as a way to delegate between the iPhone and the AppleWatch.
     
+    
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        print("Received activation message")
         if let messageReceived = message["activate"] as? Bool {
             if(messageReceived) {
                 startDate = Date()
@@ -41,9 +45,12 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
             }
         }
     }
+    
+    
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         configureWatchSession()
+        labelReceivedWatch.setTextColor(.darkGray)
     }
     
     override func willActivate() {
@@ -56,10 +63,10 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
         super.didDeactivate()
     }
     
+    let session = WCSession.default
     func configureWatchSession() {
         self.startDate = Date()
         if(WCSession.isSupported()) {
-            let session = WCSession.default
             session.delegate = self
             session.activate()
         }
@@ -82,9 +89,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
         DispatchQueue.main.async {
             let message = ["heartRateBPM": "50"]
             
-            WCSession.default.sendMessage(message, replyHandler:nil, errorHandler: { (error) in
-                print("Error in send message : \(error)")
-            })
+            self.session.sendMessage(message, replyHandler:nil, errorHandler: nil)
         }
         
     }
@@ -101,7 +106,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     var anchoredQueryHeartRate: HKAnchoredObjectQuery?
     
     func getHeartRateData() {
-        print("Getting HR Data...")
         // Creating the predicates for the HKQuery.
         
         let calendar = Calendar.current
@@ -133,7 +137,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     var anchoredQueryPushCount: HKAnchoredObjectQuery?
     
     func getPushCountData() {
-        print("Getting Push count Data...")
         // Creating the predicates for the HKQuery.
         
         let calendar = Calendar.current
@@ -162,9 +165,9 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
         
     }
     
-    func stopHeartRateData() {
+    func stopHeartRateAndPushCountData() {
         DispatchQueue.main.async {
-            //self.healthStore.stop(self.anchoredQueryHeartRate!)
+            self.healthStore.stop(self.anchoredQueryHeartRate!)
             self.healthStore.stop(self.anchoredQueryPushCount!)
         }
     }
@@ -178,7 +181,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     //Retrived necessary parameter from HK Sample
     func collectCurrentHeartRateSample(currentSampleType : [HKSample]?, deleted : [HKDeletedObject]?){
         
-        print("Collecting HR Data...")
         
         self.currentHeartRateSample = currentSampleType
         
@@ -197,23 +199,28 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
             
             print("HR Data: \(self.currentHeartRateBPM)")
             
-            self.labelReceivedWatch.setText("\(self.currentHeartRateBPM)")
+            self.labelReceivedWatch.setText("\(Int(self.currentHeartRateBPM))")
             
-            DispatchQueue.main.async {
-                
-                let message = [
-                    "HeartRateBPM" : self.currentHeartRateBPM,
-                    "HeartRateStartDate" : heartRateStartDate,
-                    "HeartRateEndDate" : heartRateEndDate
-                    ] as [String : Any]
-                
-                print("HR Data: \(self.currentHeartRateBPM)")
-                
-                //Transfer data from watch to iPhone
-                WCSession.default.sendMessage(message, replyHandler:nil, errorHandler: { (error) in
-                    print("Error in send message : \(error)")
-                })
-                
+            let dateRecorded = Date()
+            if(session.isReachable) {
+                DispatchQueue.main.async {
+                    
+                    let message = [
+                        "HeartRateBPM" : self.currentHeartRateBPM,
+                        "HeartRateStartDate" : heartRateStartDate,
+                        "HeartRateEndDate" : heartRateEndDate,
+                        "HeartRateDateRecorded" : dateRecorded
+                        ] as [String : Any]
+                    
+                    print("HR Data: \(self.currentHeartRateBPM)")
+                    
+                    //Transfer data from watch to iPhone
+                    if(self.session.isReachable) {
+                        self.session.sendMessage(message, replyHandler:nil, errorHandler: nil)
+                    }
+                    
+                    
+                }
             }
             
         }
@@ -228,8 +235,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     
     //Retrived necessary parameter from HK Sample
     func collectCurrentPushRateSample(currentSampleType : [HKSample]?, deleted : [HKDeletedObject]?){
-        
-        print("Collecting Push count Data...")
         
         self.currentPushRateSample = currentSampleType
         
@@ -250,9 +255,9 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
             
             self.labelReceivedWatch.setText("\(self.currentPushRateBPM)")
             
-            DispatchQueue.main.async {
-                print("Push Data: \(self.currentPushRateBPM)")
-            }
+//            DispatchQueue.main.async {
+//                print("Push Data: \(self.currentPushRateBPM)")
+//            }
             
         }
         
@@ -270,7 +275,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
         
         
         let configuration = HKWorkoutConfiguration()
-        configuration.activityType = .wheelchairRunPace
+        configuration.activityType = .wheelchairWalkPace
         
         do {
             workoutSession = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
@@ -287,14 +292,18 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
         builder?.beginCollection(withStart: self.startDate!, completion: { (success, error) in
             
         })
-        //getHeartRateData()
+        getHeartRateData()
         getPushCountData()
         
     }
     
     func stopWorkout(endDate: Date) {
         print("Stopping workout...")
+        
+        self.stopHeartRateAndPushCountData()
         self.importPushCountHistory(endDate: endDate)
+        self.getActiveEnergy()
+        
         self.workoutSession?.stopActivity(with: endDate)
         self.workoutSession?.end()
         builder?.endCollection(withEnd: endDate, completion: { (success, error) in
@@ -302,7 +311,9 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
                 self.dismiss()
             }
         })
-        self.stopHeartRateData()
+        
+        
+       
     }
     
     func querySingleSample() {
@@ -337,8 +348,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
                                                 intervalComponents: interval)
         query.initialResultsHandler = { _, results, error in
             guard let results = results else { return }
-            print("Guard passed..")
-            print(results.statistics().count)
             
             var dictionaryArray = [Dictionary<Date, Double>]()
             var tempDictionary = Dictionary<Date, Double>()
@@ -353,18 +362,50 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
                     dictionaryArray.append(tempDictionary)
                 }
             }
-            DispatchQueue.main.async {
-                print("Sending message...")
-                let message = ["PushCount" : tempDictionary] as [String : Any]
-                //Transfer data from watch to iPhone
-                WCSession.default.sendMessage(message, replyHandler:nil, errorHandler: { (error) in
-                    print("Error in send message : \(error)")
-                })
+            if(self.session.isReachable) {
+                DispatchQueue.main.async {
+                    let message = ["PushCount" : tempDictionary] as [String : Any]
+                    //Transfer data from watch to iPhone
+                    self.session.sendMessage(message, replyHandler:nil, errorHandler: nil)
+                }
             }
+            
         }
         
         healthStore.execute(query)
         
+    }
+    var totalActiveEnergy = 0.0
+    func getActiveEnergy () {
+
+        let energySampleType = HKSampleType.quantityType(forIdentifier: .activeEnergyBurned)
+        let predicate = HKQuery.predicateForSamples(withStart: self.startDate, end: self.endDate, options: [.strictStartDate, .strictEndDate])
+
+        let query = HKSampleQuery(sampleType: energySampleType!, predicate: predicate, limit: 0, sortDescriptors: nil, resultsHandler: {
+            (query, results, error) in
+            if results == nil {
+                print("There was an error running the query: \(error)")
+            }
+            var totalEnergy = Double()
+            DispatchQueue.main.async {
+                
+                for activity in results as! [HKQuantitySample]
+                {
+                    let currentEnergy = (activity.quantity.doubleValue(for: HKUnit.kilocalorie()))
+                        totalEnergy += currentEnergy
+                    print(">>>>>", currentEnergy)
+                }
+                print(totalEnergy)
+                
+                let message = ["ActiveEnergy" : totalEnergy] as [String : Any]
+                //Transfer data from watch to iPhone
+                self.session.sendMessage(message, replyHandler:nil, errorHandler: nil)
+                
+                print("Total kcal: \(totalEnergy)")
+
+            }
+        })
+        self.healthStore.execute(query)
     }
     
     func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
@@ -382,9 +423,5 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, HKWorkoutSe
     func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {
         print("Did collect event...")
     }
-    
-    
-    
-    
     
 }

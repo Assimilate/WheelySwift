@@ -14,6 +14,17 @@ protocol LoginControllerDelegate: class {
 
 class LaunchController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, LoginControllerDelegate {
     
+    var homeController: HomeController?
+    
+    init(homeController: HomeController) {
+        super.init(nibName: nil, bundle: nil)
+        self.homeController = homeController
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var cellId = "cellId"
     var termsCellId = "termsCell"
     
@@ -25,18 +36,23 @@ class LaunchController: UIViewController, UICollectionViewDelegate, UICollection
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
     
     let pages: [PageModel] = {
-        let firstPage = PageModel(title: "Welcome to the app", message: "This app is a platform to collect and analyze movement data for non-ambulatory users.", imageName: "firstPage")
-        let secondPage = PageModel(title: "Beginning a workout", message: "This first tab allows you to begin and and a session. Simply click the start button to begin and click it again to end the workout session.", imageName: "secondPage")
-        let thirdPage = PageModel(title: "Viewing the data", message: "This second tab allows you to view all of the data collected.", imageName: "thirdPage")
-        let fourthPage = PageModel(title: "Looking at energy expenditure", message: "This third tab shows you how much energy you have spent during the workout session.", imageName: "fourthPage")
-        let fifthPage = PageModel(title: "Choosing which data to view", message: "This fourth tab allows you to choose which data to display in the second tab.", imageName: "fifthPage")
-        let sixthPage = PageModel(title: "Clicking the wrench allows for a few choices", message: "You can delete all data or export the data through email.", imageName: "sixthPage")
+        let firstPage = PageModel(title: "Welcome to the app", message: "This app is a platform to collect and analyze movement data for non-ambulatory users.", imageName: "welcomePage")
+        let secondPage = PageModel(title: "Install the rotation sensor on the wheelchair", message: "The rotation sensor should be installed according to the instructions included in the package. If the sensor makes a sound when the magnet passes it is installed correctly.", imageName: "installingSensor")
+        let thirdPage = PageModel(title: "Download and turn on the watch app", message: "Simply turn on the app and once you've reached the screen shown you have completed this step.", imageName: "watchOn")
+        let fourthPage = PageModel(title: "Beginning a workout", message: "This first tab allows you to begin and end a session. Simply click the start button to begin and click it again to end the workout session.", imageName: "howToBegin")
+        let fifthPage = PageModel(title: "Connecting the sensors", message: "Once the application has connected to all sensors the icon will turn green and you can begin the workout session. It can take a while and rememeber to push the wheelchair a few turns so the Tacx sensor turns on.", imageName: "connectingSensors")
+        let sixthPage = PageModel(title: "Viewing the data", message: "This second tab allows you to view all of the data collected.", imageName: "viewingData")
+        let seventhPage = PageModel(title: "Looking at energy expenditure", message: "This third tab shows you the energy expended and distance travelled during the workout session. There is two energy expenditures calculated. One with Apples watch algorithm and one based on the Tacx sensor.", imageName: "energy")
+        let eightPage = PageModel(title: "Choosing which data to view", message: "This fourth tab allows you to choose which data to display in the second tab.", imageName: "pickingWorkout")
+        let ninethPage = PageModel(title: "Clicking the wrench allows for a few choices", message: "You can delete all data or export the data through email as well as navigate back to these introductory images.", imageName: "options")
         
-        return [firstPage, secondPage, thirdPage, fourthPage, fifthPage, sixthPage]
+        return [firstPage, secondPage, thirdPage, fourthPage, fifthPage, sixthPage, seventhPage, eightPage, ninethPage]
     }()
     
     lazy var pageController: UIPageControl = {
@@ -109,8 +125,8 @@ class LaunchController: UIViewController, UICollectionViewDelegate, UICollection
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         guard let mainNavigationController = rootViewController as? MainNavigationController else {return}
         
-        let layout = UICollectionViewFlowLayout()
-        mainNavigationController.viewControllers = [HomeController(collectionViewLayout: layout)]
+//        let layout = UICollectionViewFlowLayout()
+        mainNavigationController.viewControllers = [self.homeController! as UIViewController]
         
         UserDefaults.standard.setAccepted(value: true)
         

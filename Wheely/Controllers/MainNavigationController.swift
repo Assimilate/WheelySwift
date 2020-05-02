@@ -10,12 +10,18 @@ import UIKit
 
 class MainNavigationController: UINavigationController {
     
+    let homeController: HomeController = {
+        let layout = UICollectionViewFlowLayout()
+        let homeController = HomeController(collectionViewLayout: layout)
+        return homeController
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         if hasAcceptedTerms() {
-            let layout = UICollectionViewFlowLayout()
-            let homeController = HomeController(collectionViewLayout: layout)
+//            let layout = UICollectionViewFlowLayout()
+//            let homeController = HomeController(collectionViewLayout: layout)
             viewControllers = [homeController]
         } else {
             perform(#selector(showLaunchController), with: nil, afterDelay: 0.01)
@@ -24,7 +30,7 @@ class MainNavigationController: UINavigationController {
     }
     
     @objc func showLaunchController() {
-        let launchController = LaunchController()
+        let launchController = LaunchController(homeController: self.homeController)
         launchController.modalPresentationStyle = .fullScreen
         present(launchController, animated: true) {
             // Might use later.

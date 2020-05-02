@@ -89,6 +89,7 @@ extension UserDefaults {
     
     enum UserDefaultsKeys: String {
         case hasAccepted
+        case hasEnteredProfile
     }
     
     func setAccepted(value: Bool) {
@@ -98,6 +99,14 @@ extension UserDefaults {
     
     func hasAccepted() -> Bool {
         bool(forKey: UserDefaultsKeys.hasAccepted.rawValue)
+    }
+    
+    func setProfile(value: Bool) {
+        set(value, forKey: UserDefaultsKeys.hasEnteredProfile.rawValue)
+    }
+    
+    func hasEnteredProfile() -> Bool {
+        bool(forKey: UserDefaultsKeys.hasEnteredProfile.rawValue)
     }
 }
 

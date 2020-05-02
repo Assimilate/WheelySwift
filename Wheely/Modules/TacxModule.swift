@@ -16,6 +16,9 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var viewController: HomeController?
     var database: Database?
     
+    var ready = false
+    var flag = false
+    
     init(viewController: HomeController, database: Database) {
         super.init()
         self.viewController = viewController
@@ -54,12 +57,12 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func stopBLE() {
-        if(peripheralDevice?.state == .connected) {
             sessionOn = false
-            centralManager?.cancelPeripheralConnection(peripheralDevice!)
+            self.flag = false
+            
+            self.currentDistance = 0
             updateController()
-        }
-        
+            print("Total amount of revolutions: \(currentAmountOfRevolutions - startAmountOfRotations)")
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -121,10 +124,15 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
                 peripheral.setNotifyValue(true, for: characteristic)
             }
         }
+        if(!self.ready) {
+            self.viewController?.connectionReady(moduleName: "Tacx", ready: true)
+            self.ready = true
+        }
+        
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        
+        self.viewController?.connectionReady(moduleName: "Tacx", ready: true)
         if characteristic.uuid == BLE_CSC_Measurement_Characteristic {
             deriveTotalRotations(using: characteristic)
         }
@@ -139,13 +147,17 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var timeSinceLastRevolutionCurrent = 0
     
     var previousAmountOfRevolutions = 0
-    var currentAmountOfRevolutions = 1
+    var currentAmountOfRevolutions = 0
+    
+    var startAmountOfRotations = 0
     
     func deriveTotalRotations(using BLE_CSC_Measurement_Characteristic: CBCharacteristic) {
         let packet = BLE_CSC_Measurement_Characteristic.value!
         let buffer = [UInt8](packet)
         
         // Extracting the 32 bits of data related to total amount of wheel revolutions.
+        
+        print("Rotations: \(self.currentAmountOfRevolutions)")
         
         self.previousAmountOfRevolutions = self.currentAmountOfRevolutions
         
@@ -154,7 +166,13 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             $0.pointee
         }
         
-        self.currentAmountOfRevolutions = Int(totalRotations)
+        
+        if(self.previousAmountOfRevolutions == 0) {
+            self.currentAmountOfRevolutions = Int(totalRotations)
+            self.previousAmountOfRevolutions = self.currentAmountOfRevolutions
+        } else {
+            self.currentAmountOfRevolutions = Int(totalRotations)
+        }
         
         let differenceInRotations = self.currentAmountOfRevolutions - self.previousAmountOfRevolutions
         
@@ -183,11 +201,16 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         
         self.previousTime = self.currentTime
         
-        // <--
-        DispatchQueue.main.async {
-            // self.rotationsLabel.text = "Rotations: \(self.currentAmountOfRevolutions)"
-            // self.rotationTimeLabel.text = "Rotation time: \(self.timeSinceLastRevolutionCurrent)"
+        if(self.flag == false) {
+            self.startAmountOfRotations = self.currentAmountOfRevolutions
+            self.flag = true
         }
+        
+        // <--
+        
+            
+            // self.rotationTimeLabel.text = "Rotation time: \(self.timeSinceLastRevolutionCurrent)"
+        
         
         let doubleTimeSinceLastRevolution = Double(timeSinceLastRevolutionCurrent)
         let doubleDifferenceInRotations = Double(differenceInRotations)
@@ -198,27 +221,29 @@ class TacxModule: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     
     var currentVelocity = Double(1)
     var previousVelocity = Double(0)
-    let wheelDiameter = Double(0.6096) // 24 inches in metres.
+    let wheelDiameter = Double(0.57) // Should be 24 inches in metres but i 57cm.
     var currentDistance = Double()
     var BLEDate = Date()
     
     
     // The velocity is equal to the distance/time which in this case is (wheelDiameter*PI*nrOfRotations) / (timeTaken)
-    
+    var totalDistance = Double()
     func deriveVelocityForTacx(doubleTimeSinceLastRevolution: Double, doubleDifferenceInRotations: Double) {
         
         let wheelCircumference = self.wheelDiameter * Double.pi
         
         previousVelocity = currentVelocity
         currentVelocity = ((wheelCircumference * doubleDifferenceInRotations)/((doubleTimeSinceLastRevolution) / 1000)) // m/s
-       
-        currentDistance = Double(self.currentAmountOfRevolutions)*wheelCircumference
+        print("Diff in rotations: \(doubleDifferenceInRotations)")
+        currentDistance = Double(doubleDifferenceInRotations)*wheelCircumference
+        totalDistance += currentDistance
+        self.BLEDate = self.getCurrentTimeBLE()
         
         if(currentVelocity != nil && currentVelocity > 0 && currentVelocity.isNaN != true && currentDistance.isNaN != true) {
-            database!.saveData(velocityNumber: self.currentVelocity, distance: self.currentDistance, altitude: 0.0, timeDate: self.BLEDate, entityName: "Tacx")
+            database!.saveData(velocityNumber: self.currentVelocity, distance: Double(self.currentDistance), altitude: 0.0, timeDate: Date(), entityName: "Tacx")
         }
         
-        self.BLEDate = self.getCurrentTimeBLE()
+        
     }
     
     func decodePeripheralState(peripheralState: CBPeripheralState) {

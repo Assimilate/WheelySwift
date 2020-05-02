@@ -29,6 +29,8 @@ class ProfileCell: UICollectionViewCell {
         addSubview(weightView)
         addSubview(ageTitle)
         addSubview(ageView)
+        addSubview(wheelchairWeightTitle)
+        addSubview(wheelchairWeightView)
         addSubview(saveButton)
         
         _ = weightTitle.anchor(topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 100, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 25)
@@ -39,7 +41,11 @@ class ProfileCell: UICollectionViewCell {
         
         _ = ageView.anchor(ageTitle.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 0, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 50)
         
-        _ = saveButton.anchor(ageView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 8, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 50)
+        _ = wheelchairWeightTitle.anchor(ageView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 18, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 25)
+        
+        _ = wheelchairWeightView.anchor(wheelchairWeightTitle.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 0, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 50)
+        
+        _ = saveButton.anchor(wheelchairWeightView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topConstant: 8, leftConstant: 32, bottomConstant: 0, rightConstant: 32, widthConstant: 0, heightConstant: 50)
         
     }
     
@@ -81,6 +87,22 @@ class ProfileCell: UICollectionViewCell {
         return textField
     }()
     
+    let wheelchairWeightTitle: UITextView = {
+        let wheelchairWeightTitle = UITextView()
+        wheelchairWeightTitle.text = "Wheelchair weight"
+        wheelchairWeightTitle.isEditable = false
+        wheelchairWeightTitle.textAlignment = .center
+        return wheelchairWeightTitle
+    }()
+    
+    let wheelchairWeightView: UITextField = {
+        let textField = UITextField()
+        textField.text = ""
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.layer.borderWidth = 0.5
+        textField.textAlignment = .center
+        return textField
+    }()
     
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
@@ -94,7 +116,7 @@ class ProfileCell: UICollectionViewCell {
     weak var delegate: ProfileControllerDelegate?
     
     @objc func handleSave() {
-        print("Handling save...")
+
         guard let weight = Int(weightView.text ?? "0") else {
             delegate?.alert(field: "weight")
             return
@@ -103,8 +125,12 @@ class ProfileCell: UICollectionViewCell {
             delegate?.alert(field: "age")
             return
         }
-        print("Returns handled")
-        delegate?.hasSavedData(weight: weight, age: age)
+        guard let wheelchairWeight = Int(wheelchairWeightView.text ?? "0") else {
+            delegate?.alert(field: "wheelchairWeight")
+            return
+        }
+
+        delegate?.hasSavedData(weight: weight, age: age, wheelchairWeight: wheelchairWeight)
     }
     
     

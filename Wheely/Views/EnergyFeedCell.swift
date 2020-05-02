@@ -11,7 +11,7 @@ import UIKit
 class EnergyFeedCell: FeedCell {
     
     
-    let energyFeedCellIds = ["energyExpenditureTacxId", "energyExpenditureGPSId"]
+    let energyFeedCellIds = ["distanceTacxId", "distanceGPSId", "energyExpenditureTacx", "energyExpenditureApple", "energyExpenditureAlternative"]
     
     
     override func setupViews() {
@@ -23,6 +23,9 @@ class EnergyFeedCell: FeedCell {
 
         collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[0])
         collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[1])
+        collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[2])
+        collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[3])
+        collectionView.register(PhysicsCell.self, forCellWithReuseIdentifier: energyFeedCellIds[4])
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

@@ -17,7 +17,6 @@ class DateCell: BaseCell, UIPickerViewDelegate, UIPickerViewDataSource {
     var date: DateModel? {
         didSet {
             //self.datePicker = date?.datePicker as! UIDatePicker
-            print("Did set date model")
             self.dateButton.titleLabel?.text = date?.title
             self.sessions = date?.sessions
         }
@@ -70,6 +69,7 @@ class DateCell: BaseCell, UIPickerViewDelegate, UIPickerViewDataSource {
         if(sessions!.count > 0) {
             self.homeController?.updateAllBetweenDates(startDate: (self.sessions?[selectedRow].startDate)! , endDate: (self.sessions?[selectedRow].endDate)!)
         }
+        self.homeController?.scrollToMenuIndex(menuIndex: 1)
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
